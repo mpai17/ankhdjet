@@ -1,0 +1,62 @@
+[
+  {
+    "platform": "sky130hd",
+    "design": "gcd",
+    "target_period_ns": 1.1,
+    "worst_slack_setup_ns": -1.4730753700456714,
+    "worst_slack_hold_ns": 0.5034154346984007,
+    "achieved_period_ns": 2.5730753700456717,
+    "achieved_fmax_mhz": 388.6399954083934,
+    "die_width_mm": 0.07805,
+    "die_height_mm": 0.07805,
+    "die_area_mm2": 0.006091802499999999
+  },
+  {
+    "platform": "sky130hd",
+    "design": "aes",
+    "target_period_ns": 3.6,
+    "worst_slack_setup_ns": 0.0016306956246886519,
+    "worst_slack_hold_ns": 0.38644633031867065,
+    "achieved_period_ns": 3.5983693043753116,
+    "achieved_fmax_mhz": 277.90366007849303,
+    "die_width_mm": 0.47519,
+    "die_height_mm": 0.47519,
+    "die_area_mm2": 0.2258055361
+  },
+  {
+    "platform": "sky130hd",
+    "design": "ibex",
+    "target_period_ns": 10.0,
+    "worst_slack_setup_ns": 0.006421530156045181,
+    "worst_slack_hold_ns": 0.41833404591149814,
+    "achieved_period_ns": 9.993578469843955,
+    "achieved_fmax_mhz": 100.06425656410686,
+    "die_width_mm": 0.5075299999999999,
+    "die_height_mm": 0.5075299999999999,
+    "die_area_mm2": 0.2575867008999999
+  },
+  {
+    "platform": "sky130hd",
+    "design": "jpeg",
+    "target_period_ns": 5.0,
+    "worst_slack_setup_ns": -0.22054358963313678,
+    "worst_slack_hold_ns": -0.20971180940934023,
+    "achieved_period_ns": 5.220543589633137,
+    "achieved_fmax_mhz": 191.55093388852882,
+    "die_width_mm": 0.88337,
+    "die_height_mm": 0.88337,
+    "die_area_mm2": 0.7803425569
+  },
+  {
+    "platform": "sky130hd",
+    "design": "microwatt",
+    "target_period_ns": 100.0,
+    "worst_slack_setup_ns": 4.514499124533609,
+    "worst_slack_hold_ns": -1.0968957164152806,
+    "achieved_period_ns": 95.48550087546639,
+    "achieved_fmax_mhz": 10.472794202590139,
+    "die_width_mm": 3.02,
+    "die_height_mm": 3.61,
+    "die_area_mm2": 10.9022
+  }
+]

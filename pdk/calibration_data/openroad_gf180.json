@@ -1,0 +1,50 @@
+[
+  {
+    "platform": "gf180",
+    "design": "aes",
+    "target_period_ns": 3.0,
+    "worst_slack_setup_ns": -2.654520678404019,
+    "worst_slack_hold_ns": 0.18926682978803955,
+    "achieved_period_ns": 5.654520678404019,
+    "achieved_fmax_mhz": 176.84964948828318,
+    "die_width_mm": 2.00806,
+    "die_height_mm": 2.00806,
+    "die_area_mm2": 4.0323049636
+  },
+  {
+    "platform": "gf180",
+    "design": "jpeg",
+    "target_period_ns": 7.5,
+    "worst_slack_setup_ns": -1.3028867242746607,
+    "worst_slack_hold_ns": 0.5333346137905913,
+    "achieved_period_ns": 8.80288672427466,
+    "achieved_fmax_mhz": 113.59909894585152,
+    "die_width_mm": 4.20005,
+    "die_height_mm": 4.20005,
+    "die_area_mm2": 17.6404200025
+  },
+  {
+    "platform": "gf180",
+    "design": "ibex",
+    "target_period_ns": 10.0,
+    "worst_slack_setup_ns": -4.9623702107614145,
+    "worst_slack_hold_ns": -2.7315586121723303,
+    "achieved_period_ns": 14.962370210761414,
+    "achieved_fmax_mhz": 66.83433078542383,
+    "die_width_mm": 2.2724699999999998,
+    "die_height_mm": 2.2724699999999998,
+    "die_area_mm2": 5.1641199008999985
+  },
+  {
+    "platform": "gf180",
+    "design": "riscv32i",
+    "target_period_ns": 9.0,
+    "worst_slack_setup_ns": -2.8854821571056664,
+    "worst_slack_hold_ns": 0.4841581717024349,
+    "achieved_period_ns": 11.885482157105667,
+    "achieved_fmax_mhz": 84.13625857005353,
+    "die_width_mm": 1.46437,
+    "die_height_mm": 1.46437,
+    "die_area_mm2": 2.1443794969
+  }
+]

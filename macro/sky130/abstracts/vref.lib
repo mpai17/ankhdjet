@@ -1,0 +1,35 @@
+library ("vref") {
+  technology (cmos);
+  delay_model : table_lookup;
+  time_unit : "1ns";
+  voltage_unit : "1V";
+  current_unit : "1mA";
+  capacitive_load_unit (1.0, pf);
+  pulling_resistance_unit : "1kohm";
+  leakage_power_unit : "1nW";
+  nom_voltage : 1.8;
+  nom_temperature : 25.0;
+  nom_process : 1.0;
+  voltage_map (VPWR, 1.8);
+  voltage_map (VGND, 0.0);
+  operating_conditions ("tt_025C_1v80") {
+    process : 1.0; temperature : 25.0; voltage : 1.8; tree_type : balanced_tree;
+  }
+  default_operating_conditions : tt_025C_1v80;
+  input_threshold_pct_rise : 50.0;
+  input_threshold_pct_fall : 50.0;
+  output_threshold_pct_rise : 50.0;
+  output_threshold_pct_fall : 50.0;
+  slew_lower_threshold_pct_rise : 20.0;
+  slew_upper_threshold_pct_rise : 80.0;
+  slew_lower_threshold_pct_fall : 20.0;
+  slew_upper_threshold_pct_fall : 80.0;
+  slew_derate_from_library : 1.0;
+  cell ("vref") {
+    is_macro_cell : true;
+    dont_use : true;
+    pg_pin (VPWR) { pg_type : primary_power; voltage_name : "VPWR"; }
+    pg_pin (VGND) { pg_type : primary_ground; voltage_name : "VGND"; }
+    pin (VREF) { direction : inout; related_power_pin : "VPWR"; related_ground_pin : "VGND"; }
+  }
+}

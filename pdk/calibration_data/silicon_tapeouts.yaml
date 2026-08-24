@@ -1,0 +1,204 @@
+# Measured / signoff achieved-fmax vs area for taped-out designs on the only
+# two open PDKs with significant tapeout history (SKY130 and GF180MCU). Used
+# to fit the clock-tree skew coefficient alpha in:
+#     effective_fmax = ideal_clock / (1 + alpha * sqrt(area_mm2))
+#
+# Source-string convention:
+#   "measured-on-silicon"  -- fmax confirmed on a fabricated, packaged die
+#   "signoff-not-silicon"  -- post-CTS / STA closure, fab'd or queued for fab,
+#                             but no published bench number yet
+#   "synthesis_only"       -- target frequency from constraint.sdc with no
+#                             post-route closure; EXCLUDE from the alpha fit
+#
+# Areas refer to the timing-closed block (core or user-area), not padframe.
+
+# ---------- SKY130 (130 nm) ----------
+
+- name: "OpenROAD sky130hd gcd"
+  process_nm: 130
+  area_mm2: 0.014
+  achieved_fmax_mhz: 222
+  source: "OpenROAD-flow-scripts sky130hd/gcd, clk_period 4.5 ns; small-block reference; signoff-not-silicon (ORFS public CI metrics.json)"
+
+- name: "OpenROAD sky130hd AES cipher"
+  process_nm: 130
+  area_mm2: 0.13
+  achieved_fmax_mhz: 278
+  source: "OpenROAD-flow-scripts sky130hd/aes constraint.sdc clk_period 3.6 ns; signoff-not-silicon; https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts/blob/master/flow/designs/sky130hd/aes/constraint.sdc"
+
+- name: "OpenROAD sky130hd RISCV32I"
+  process_nm: 130
+  area_mm2: 0.18
+  achieved_fmax_mhz: 167
+  source: "OpenROAD-flow-scripts sky130hd/riscv32i constraint.sdc clk_period 6.0 ns; signoff-not-silicon"
+
+- name: "OpenROAD sky130hd Ibex (lowRISC RV32IMC)"
+  process_nm: 130
+  area_mm2: 0.45
+  achieved_fmax_mhz: 100
+  source: "OpenROAD-flow-scripts sky130hd/ibex constraint.sdc clk_period 10.0 ns, ~50% util; signoff-not-silicon; https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts/blob/master/flow/designs/sky130hd/ibex/constraint.sdc"
+
+- name: "TinyTapeout TT04 user tile (typical digital slot)"
+  process_nm: 130
+  area_mm2: 0.024
+  achieved_fmax_mhz: 50
+  source: "TinyTapeout silicon-proven measurements, ~150 um x 160 um per slot; clock-input demonstrated >=50 MHz on returned silicon; measured-on-silicon; https://tinytapeout.com/specs/clock/"
+
+- name: "OpenROAD sky130hd JPEG encoder"
+  process_nm: 130
+  area_mm2: 1.5
+  achieved_fmax_mhz: 200
+  source: "OpenROAD-flow-scripts sky130hd/jpeg constraint.sdc clk_period 5.0 ns; signoff-not-silicon"
+
+- name: "Riscduino single-core SoC (Annayya, Caravel MPW)"
+  process_nm: 130
+  area_mm2: 2.92
+  achieved_fmax_mhz: 50
+  source: "Riscduino docs: pipeline retuned to ~50 MHz typical-corner closure; fabricated on Efabless Open MPW; measured-on-silicon (Silicon Showcase video); https://github.com/dineshannayya/riscduino"
+
+- name: "Caravel management SoC (Efabless harness, PicoRV32)"
+  process_nm: 130
+  area_mm2: 2.5
+  achieved_fmax_mhz: 40
+  source: "Caravel harness datasheet: PicoRV32 mgmt core qualified ~40-50 MHz typical, run on every Efabless MPW shuttle; measured-on-silicon (Caravel dev board); https://caravel-harness.readthedocs.io/"
+
+- name: "Riscduino quad-core (RISCduino QCore, Caravel user-area)"
+  process_nm: 130
+  area_mm2: 10.0
+  achieved_fmax_mhz: 100
+  source: "RISCduino hierarchical flow case study: ~150K cells + 48 KB SRAM in 10 mm^2 user area, 100 MHz typical-corner closure; signoff-not-silicon; https://theopenroadproject.org/implementation-of-riscduino-core-using-a-hierarchical-design-flow/"
+
+- name: "OpenROAD sky130hd Microwatt (OpenPOWER)"
+  process_nm: 130
+  area_mm2: 10.91
+  achieved_fmax_mhz: 67
+  source: "OpenROAD-flow-scripts sky130hd/microwatt config.mk DIE_AREA 3020x3610 um, constraint.sdc clk_period 15.0 ns; signoff-not-silicon; https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts/blob/master/flow/designs/sky130hd/microwatt/config.mk"
+
+- name: "Caravel full chip (mgmt + user area + padframe)"
+  process_nm: 130
+  area_mm2: 38.4
+  achieved_fmax_mhz: 40
+  source: "Efabless Caravel 3.6 mm x 5.0 mm full die; mgmt PicoRV32 limits external clock to ~40 MHz across hundreds of MPW returns; measured-on-silicon; https://github.com/efabless/caravel"
+
+- name: "OpenTitan Earl Grey discrete (Nuvoton/zeroRISC, 65 nm node-shifted)"
+  process_nm: 130
+  area_mm2: 16.0
+  achieved_fmax_mhz: 100
+  source: "OpenTitan Earl Grey datasheet: 100 MHz Ibex core domain, 24 MHz peripheral; first commercial OSS chip June 2023; node mapped to 130 nm equivalent for cross-PDK fit; measured-on-silicon (extrapolated, actual fab 65 nm); https://opentitan.org/book/hw/top_earlgrey/doc/datasheet.html"
+
+# ---------- GF180MCU (180 nm) ----------
+
+- name: "wafer.space GF180MCU Run 1 user slot (LibreLane template)"
+  process_nm: 180
+  area_mm2: 19.67
+  achieved_fmax_mhz: 40
+  source: "wafer.space GF180MCU Run 1 fixed slot 3.88 x 5.07 mm, gf180mcuD/LibreLane reference flow closes ~25-40 MHz typical for digital cores; signoff-not-silicon (Run 1 returns pending publication); https://www.crowdsupply.com/wafer-space/gf180mcu-run-1"
+
+- name: "GF180MCU 2x2 systolic MAC (Essenceia, with DFT)"
+  process_nm: 180
+  area_mm2: 0.0011
+  achieved_fmax_mhz: 50
+  source: "GitHub Essenceia/Systolic_MAC_with_DFT GF180MCU tapeout, ~1128 um^2 die, 3.3 V / 25 C target ~50 MHz; signoff-not-silicon; https://github.com/Essenceia/Systolic_MAC_with_DFT"
+
+- name: "GF180MCU MPW-0 Caravel-style harness (Google MPW shuttle)"
+  process_nm: 180
+  area_mm2: 10.0
+  achieved_fmax_mhz: 25
+  source: "Google GF-MPW-0 test shuttle: Caravel harness ported to GF180MCU, mgmt core typically closes ~20-25 MHz at 180 nm; signoff-not-silicon; https://opensource.googleblog.com/2022/10/announcing-globalfoundries-open-mpw-shuttle-program.html"
+
+- name: "Tiny Tapeout GF180MCU slot (wafer.space hosted)"
+  process_nm: 180
+  area_mm2: 0.05
+  achieved_fmax_mhz: 30
+  source: "Tiny Tapeout demo on wafer.space GF180MCU Run 1; per-slot ~225 x 225 um, demonstrated ~30 MHz user-clock; measured-on-silicon (TT GF180 returns); https://www.crowdsupply.com/wafer-space/gf180mcu-run-1/updates/tiny-tapeout"
+
+# === Appended by tools/openroad/run_openroad_anchor.py ===
+- name: "ORFS sky130hd gcd (CTS+STA via run_cts_sta.tcl)"
+  process_nm: 130
+  area_mm2: 0.0061
+  achieved_fmax_mhz: 389
+  source: "openroad-flow-scripts sky130hd/gcd placed via make + custom CTS+STA Tcl; signoff_not_silicon"
+
+- name: "ORFS sky130hd aes (CTS+STA via run_cts_sta.tcl)"
+  process_nm: 130
+  area_mm2: 0.2258
+  achieved_fmax_mhz: 278
+  source: "openroad-flow-scripts sky130hd/aes placed via make + custom CTS+STA Tcl; signoff_not_silicon"
+
+- name: "ORFS sky130hd ibex (CTS+STA via run_cts_sta.tcl)"
+  process_nm: 130
+  area_mm2: 0.2576
+  achieved_fmax_mhz: 100
+  source: "openroad-flow-scripts sky130hd/ibex placed via make + custom CTS+STA Tcl; signoff_not_silicon"
+
+- name: "ORFS sky130hd jpeg (CTS+STA via run_cts_sta.tcl)"
+  process_nm: 130
+  area_mm2: 0.7803
+  achieved_fmax_mhz: 192
+  source: "openroad-flow-scripts sky130hd/jpeg placed via make + custom CTS+STA Tcl; signoff_not_silicon"
+
+- name: "ORFS sky130hd microwatt (CTS+STA via run_cts_sta.tcl)"
+  process_nm: 130
+  area_mm2: 10.9022
+  achieved_fmax_mhz: 10
+  source: "openroad-flow-scripts sky130hd/microwatt placed via make + custom CTS+STA Tcl; signoff_not_silicon"
+
+- name: "ORFS gf180 aes (CTS+STA via run_cts_sta.tcl)"
+  process_nm: 180
+  area_mm2: 4.0323
+  achieved_fmax_mhz: 177
+  source: "openroad-flow-scripts gf180/aes placed via make + custom CTS+STA Tcl; signoff_not_silicon"
+
+- name: "ORFS gf180 jpeg (CTS+STA via run_cts_sta.tcl)"
+  process_nm: 180
+  area_mm2: 17.6404
+  achieved_fmax_mhz: 114
+  source: "openroad-flow-scripts gf180/jpeg placed via make + custom CTS+STA Tcl; signoff_not_silicon"
+
+- name: "ORFS gf180 ibex (CTS+STA via run_cts_sta.tcl)"
+  process_nm: 180
+  area_mm2: 5.1641
+  achieved_fmax_mhz: 67
+  source: "openroad-flow-scripts gf180/ibex placed via make + custom CTS+STA Tcl; signoff_not_silicon"
+
+- name: "ORFS gf180 riscv32i (CTS+STA via run_cts_sta.tcl)"
+  process_nm: 180
+  area_mm2: 2.1444
+  achieved_fmax_mhz: 84
+  source: "openroad-flow-scripts gf180/riscv32i placed via make + custom CTS+STA Tcl; signoff_not_silicon"
+
+- name: "ORFS asap7 gcd (CTS+STA via run_cts_sta.tcl)"
+  process_nm: 7
+  area_mm2: 0.0001
+  achieved_fmax_mhz: 1980
+  source: "openroad-flow-scripts asap7/gcd placed via make + custom CTS+STA Tcl; signoff_not_silicon"
+
+- name: "ORFS asap7 aes (CTS+STA via run_cts_sta.tcl)"
+  process_nm: 7
+  area_mm2: 0.0026
+  achieved_fmax_mhz: 2296
+  source: "openroad-flow-scripts asap7/aes placed via make + custom CTS+STA Tcl; signoff_not_silicon"
+
+- name: "ORFS asap7 ethmac (CTS+STA via run_cts_sta.tcl)"
+  process_nm: 7
+  area_mm2: 0.0114
+  achieved_fmax_mhz: 845
+  source: "openroad-flow-scripts asap7/ethmac placed via make + custom CTS+STA Tcl; signoff_not_silicon"
+
+- name: "ORFS asap7 ibex (CTS+STA via run_cts_sta.tcl)"
+  process_nm: 7
+  area_mm2: 0.0059
+  achieved_fmax_mhz: 831
+  source: "openroad-flow-scripts asap7/ibex placed via make + custom CTS+STA Tcl; signoff_not_silicon"
+
+- name: "ORFS asap7 cirom_block 2560x256 (CiROM macro + wrapper, CTS+STA via run_cts_sta.tcl)"
+  process_nm: 7
+  area_mm2: 0.0640
+  achieved_fmax_mhz: 3395
+  source: "tools/openroad/run_asap7_block.sh: 655360-weight CiROM block slice placed via ORFS make + custom CTS+STA Tcl; signoff_not_silicon"
+
+- name: "HighTide 26Q3 asap7 partition_o (post-route, positive slack)"
+  process_nm: 7
+  area_mm2: 0.1257
+  achieved_fmax_mhz: 3410
+  source: "openroad-flow-scripts via HighTide 26Q3 results (VLSIDA/HighTide webpage branch, design commit 4f1ad017; arXiv:2606.04126); signoff_not_silicon"

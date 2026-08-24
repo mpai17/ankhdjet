@@ -1,0 +1,21 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.claude/
+build/
+models/
+abc.history
+*.ext
+*.tab
+*.dump
+cell/sky130/sense_se/sim/build*/
+cell/sky130/sense_se/build/
+
+# TT tile LibreLane run artifacts
+librelane/tt_analog/runs/
+librelane/tt_digital/runs/
+librelane/tt_digital/build/
+librelane/tt_analog/*_console.log
+librelane/tt_digital/*_console.log
+librelane/cirom_chip_digital/runs/

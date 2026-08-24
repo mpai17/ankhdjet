@@ -1,0 +1,36 @@
+# Per-mm global / intermediate-tier on-chip wire delay with optimal repeater
+# insertion. Best estimates synthesized from IRDS 2024 Interconnect, Saraswat
+# EE311 notes, and Kim et al. Science 2024 (interconnect challenges review).
+# Values are for typical Cu (low-k for 130nm and below) global metal at
+# nominal Vdd. Treat as +/- 30%.
+#
+# Note: optimal-repeater delay drops with shrinking nodes through ~28nm as
+# faster transistors compensate for thinner wires (a plateau region around
+# 20-25 ps/mm), then *climbs* again at <=7nm because Cu resistivity rises
+# sharply once linewidth approaches the electron mean-free path. This is
+# the dominant credibility risk for advanced-node throughput estimates and
+# is the reason wire_hop_cycles must scale independently of gate delay.
+
+- process_nm: 180
+  delay_ps_per_mm: 110
+  source: "Saraswat EE311 'Interconnect Scaling' Table 2 (0.18 um Al/Cu transition); https://web.stanford.edu/class/ee311/NOTES/Interconnect%20Scaling.pdf"
+
+- process_nm: 130
+  delay_ps_per_mm: 70
+  source: "Saraswat EE311 'Scaling of Interconnections' (0.13 um Cu/low-k); SKY130 calibration target"
+
+- process_nm: 65
+  delay_ps_per_mm: 35
+  source: "Im, Banerjee, Saraswat IEEE TED 2005 (optimal-repeater delay vs node)"
+
+- process_nm: 28
+  delay_ps_per_mm: 22
+  source: "ITRS / Im-Saraswat scaling plateau: ~20-25 ps/mm constant 90nm to 22nm"
+
+- process_nm: 7
+  delay_ps_per_mm: 50
+  source: "Kim et al., 'Addressing interconnect challenges for enhanced computing performance,' Science 386 eadk6189 (2024); cross-checked vs imec Tokei IEDM (>30% RC-delay rise 10nm to 7nm)"
+
+- process_nm: 6
+  delay_ps_per_mm: 60
+  source: "Interpolated between 7nm Science 2024 (~50) and 5nm imec/IRDS (~70-80); no published per-mm number specifically for N6 global metal"

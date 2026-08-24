@@ -1,0 +1,20 @@
+* precharge_row4 schematic -- the clocked pull-up pair per column: row A
+* (BL-) and row B (flipped, BL+), gate caps merged per column onto the
+* met2 PRE_N backbone, one shared nwell. 4 columns = 8 devices, one
+* common gate net G and a shared body VNB (the merged nwell extracts as
+* its own net at row level; the macro ties it to VPWR).
+
+.subckt precharge D S G
+X1 D G S VNB sky130_fd_pr__pfet_01v8 w=1.0 l=0.15
+.ends precharge
+
+.subckt precharge_row4 VNB
+Xpa_0 DA_0 S_0 G precharge
+Xpb_0 DB_0 SB_0 G precharge
+Xpa_1 DA_1 S_1 G precharge
+Xpb_1 DB_1 SB_1 G precharge
+Xpa_2 DA_2 S_2 G precharge
+Xpb_2 DB_2 SB_2 G precharge
+Xpa_3 DA_3 S_3 G precharge
+Xpb_3 DB_3 SB_3 G precharge
+.ends precharge_row4

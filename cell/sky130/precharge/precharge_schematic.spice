@@ -1,0 +1,15 @@
+* precharge schematic — clocked PMOS bitline pull-up (one of the pair
+* per column; see docs/precharge_design.md).
+* LVS reference for the layout in precharge.mag.
+*
+* W=1.0 L=0.15: full-gate-drive recovery of a 65 fF bitline to 95% VDD
+* in 1.07 ns (tt) / 1.63 ns (ss/100C) -- 5x margin in the 8 ns
+* precharge state. Gate is the PRE_N port (active low), driven by the
+* read FSM; bitlines park high in idle states.
+*
+* Ports: D (drain, ties to BL), S (source, ties to VDD), G (PRE_N).
+* Body is internal nwell -- strapped to VDD at array level.
+
+.subckt precharge D S G
+X1 D G S VNB sky130_fd_pr__pfet_01v8 w=1.0 l=0.15
+.ends precharge

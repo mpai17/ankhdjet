@@ -1,0 +1,47 @@
+# Tiny Tapeout project information
+project:
+  title:        "Darga CiROM digital read + ternary MAC"
+  author:       "mpai17"
+  discord:      ""
+  description:  "Mask-programmed ternary compute-in-ROM read fully digitally: clocked bitline sampling of a 64x32 1T NOR array plus an on-die ternary MAC, no comparators, no VREF, no analog pins"
+  language:     "Verilog"
+  clock_hz:     20000000
+
+  tiles: "1x2"
+  analog_pins:  0
+  uses_vapwr:   false
+
+  top_module:  "tt_um_darga_cirom"
+
+  source_files:
+    - "project.v"
+
+pinout:
+  ui[0]: "act byte [0] / row_addr[0]"
+  ui[1]: "act byte [1] / row_addr[1]"
+  ui[2]: "act byte [2] / row_addr[2]"
+  ui[3]: "act byte [3] / row_addr[3]"
+  ui[4]: "act byte [4] / row_addr[4]"
+  ui[5]: "act byte [5] / row_addr[5]"
+  ui[6]: "act byte [6]"
+  ui[7]: "act byte [7]"
+
+  uo[0]: "result[0]"
+  uo[1]: "result[1]"
+  uo[2]: "result[2]"
+  uo[3]: "result[3]"
+  uo[4]: "result[4]"
+  uo[5]: "result[5]"
+  uo[6]: "result[6]"
+  uo[7]: "result[7]"
+
+  uio[0]: "act_wr (in)"
+  uio[1]: "start (in)"
+  uio[2]: "mode (in): 0=MVM, 1=raw row read"
+  uio[3]: "cfg_mode (in)"
+  uio[4]: "cfg_in (in)"
+  uio[5]: "result_valid (out)"
+  uio[6]: "busy (out)"
+  uio[7]: "done (out)"
+
+yaml_version: 6

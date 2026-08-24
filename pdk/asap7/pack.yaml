@@ -1,0 +1,12 @@
+# ASAP7 PDK pack: estimator tier only. ASAP7 is a predictive academic
+# PDK; the estimator carries the measured synthesis and block-P&R
+# anchors. No abstract or physical collateral ships here: no
+# contract-pin-plan macro has been drawn at this node.
+name: asap7
+version: "1"
+provenance: >-
+  ASAP7 7 nm predictive PDK (ASU/ARM). Estimator descriptor anchored
+  to the measured asap7sc7p5t synthesis mapping (0.42 calibration)
+  and the placed-and-clocked CiROM block slice, with the independent
+  HighTide point in the calibration evidence.
+tiers: [estimate]

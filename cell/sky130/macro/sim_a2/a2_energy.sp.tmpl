@@ -1,0 +1,61 @@
+* A2 energy: per-read supply energy on the C-extracted macro at FSM timing.
+* Two reads (w=+1 row 0, w=-1 row 1) as two comparable 125ns cycles, then a
+* quiet precharge-hold window for leakage. Macro and SA-pair supplies are
+* split so the two energies separate; VREF charge per cycle is the kickback.
+* Corner + RGND substituted per run. Energy = vdd * |INTEG i(source)| since
+* dynamic charge returns to a constant-voltage rail.
+.lib LIBPATH CORNER
+.temp TEMPC
+.param vdd=VDDV
+.include /home/mohnishp/workspace/Azara/cell/sky130/macro/build/macro_cap.spice
+.include /home/mohnishp/workspace/Azara/cell/sky130/sense_se/sense_col_schematic.spice
+
+Vdd   vpwr   0 dc {vdd}
+Vddsa vpwrsa 0 dc {vdd}
+Rgnd  vgnd_m 0 RGNDV
+Vref  vref   0 dc {vdd/2}
+
+* FSM-timed controls, 25ns states. Read 1: T0 pre 0-25, T1 eval 25-50,
+* T2 strobe 50-75, T3 recover 75-125. Read 2: eval 125-150, strobe 150-175,
+* recover 175-250. Idle precharge-hold from 175.2 on; leakage 260-295.
+Vpre  pre_n  0 pwl(0 0 25n 0 25.2n {vdd} 75n {vdd} 75.2n 0 125n 0 125.2n {vdd} 175n {vdd} 175.2n 0)
+Vwl0  wl0    0 pwl(0 0 26n 0 26.2n {vdd} 75n {vdd} 75.2n 0)
+Vwl1  wl1    0 pwl(0 0 126n 0 126.2n {vdd} 175n {vdd} 175.2n 0)
+Vstr  strobe 0 pwl(0 0 50n 0 50.2n {vdd} 75n {vdd} 75.2n 0 150n 0 150.2n {vdd} 175n {vdd} 175.2n 0)
+
+Xmacro vpwr vgnd_m PRE_N_NETLIST
+Xsap blp_0 vref hit_p hitb_p strobe vpwrsa 0 sa_se
+Xsan bln_0 vref hit_n hitb_n strobe vpwrsa 0 sa_se
+
+* rectified VREF-current integrator: v(qvr) = integral |i(Vref)| dt (C=1F)
+Gvr 0 qvr cur='abs(i(Vref))'
+Cvr qvr 0 1
+Rvr qvr 0 1G
+
+.tran 0.05n 600n
+.control
+run
+* functional sanity: the energy row only counts if the reads decide correctly
+meas tran hitp_read1 find v(hit_p) at=74n
+meas tran hitn_read1 find v(hit_n) at=74n
+meas tran hitp_read2 find v(hit_p) at=174n
+meas tran hitn_read2 find v(hit_n) at=174n
+* macro supply charge per phase of read 1 (precharge / evaluate / strobe / recover)
+meas tran q_m_t0 INTEG i(Vdd) from=0    to=25n
+meas tran q_m_t1 INTEG i(Vdd) from=25n  to=50n
+meas tran q_m_t2 INTEG i(Vdd) from=50n  to=75n
+meas tran q_m_t3 INTEG i(Vdd) from=75n  to=125n
+* full comparable cycles
+meas tran q_m_c1  INTEG i(Vdd)   from=0    to=125n
+meas tran q_m_c2  INTEG i(Vdd)   from=125n to=250n
+meas tran q_sa_c1 INTEG i(Vddsa) from=0    to=125n
+meas tran q_sa_c2 INTEG i(Vddsa) from=125n to=250n
+* VREF kickback charge per cycle (through the reference source)
+meas tran qvr_125 find v(qvr) at=125n
+meas tran qvr_250 find v(qvr) at=250n
+* idle leakage (precharge-hold state, everything quiet)
+meas tran i_lk_m  AVG i(Vdd)   from=450n to=580n
+meas tran i_lk_sa AVG i(Vddsa) from=450n to=580n
+quit
+.endc
+.end

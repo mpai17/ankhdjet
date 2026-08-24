@@ -1,0 +1,82 @@
+# Scaled-process PDK descriptors (estimates only - no actual base cell).
+# Used to project "what if we moved to a denser node?" in area reports.
+# All numbers scale from the SKY130 AS-BUILT anchor (sky130_v4.yaml,
+# bitcell 2.21 um^2/weight, one weight per cell, no array overhead baked
+# in: estimate_layer applies array_overhead_frac separately) by the
+# square of the feature-size ratio for geometric blocks (cells, SRAM).
+# Clock frequency scales roughly with process (linear). Peripheral gate
+# area scales similarly. BiROMA (2 weights/cell) is NOT in these
+# baselines; within its 65-28 nm viability window the tools apply it
+# via --biroma on top.
+
+# GlobalFoundries 65nm class
+- name: generic_65nm
+  process_nm: 65
+  node_scale: 4.0                   # (130/65)^2 = 4
+  bitcell_um2: 0.5525            # 2.21 / 4
+  gate_equivalent_um2: 1.25         # 5.0 / 4
+  transistors_per_gate: 4
+  popcount_gates_per_row: 25
+  synth_calibration: 1.0
+  between_layer_gates_per_channel: 1000
+  serializer_gates_per_row: 15
+  sram_um2_per_bit: 0.25            # 1.0 / 4
+  array_overhead_frac: 0.18
+  die_routing_overhead_frac: 0.15
+  clock_mhz: 400
+  vdd_v: 1.2
+  clock_skew_alpha: 0.0            # speculative; needs CTS-derived value
+  wire_hop_cycles: 0
+  kv_access_cycles_per_layer: 0
+  clock_domain_area_mm2: 0    # 0 = derive from per-tile area
+  crossing_cycles_per_hop: 2
+
+# TSMC 28nm class
+- name: generic_28nm
+  process_nm: 28
+  node_scale: 21.6                  # (130/28)^2 ~= 21.6
+  bitcell_um2: 0.1025            # 2.21 * (28/130)^2
+  gate_equivalent_um2: 0.23
+  transistors_per_gate: 4
+  popcount_gates_per_row: 25
+  synth_calibration: 1.0
+  between_layer_gates_per_channel: 1000
+  serializer_gates_per_row: 15
+  sram_um2_per_bit: 0.046
+  array_overhead_frac: 0.18
+  die_routing_overhead_frac: 0.15
+  clock_mhz: 1000
+  vdd_v: 0.9
+  clock_skew_alpha: 0.0            # speculative; needs CTS-derived value
+  wire_hop_cycles: 0
+  kv_access_cycles_per_layer: 0
+  clock_domain_area_mm2: 0    # 0 = derive from per-tile area
+  crossing_cycles_per_hop: 3
+
+# TSMC 6nm class (Taalas reference)
+- name: generic_6nm
+  process_nm: 6
+  node_scale: 469.4                 # (130/6)^2 ~= 469
+  bitcell_um2: 0.00471           # 2.21 * (6/130)^2
+  gate_equivalent_um2: 0.011
+  transistors_per_gate: 4
+  popcount_gates_per_row: 25
+  synth_calibration: 1.0
+  between_layer_gates_per_channel: 1000
+  serializer_gates_per_row: 15
+  sram_um2_per_bit: 0.0021
+  array_overhead_frac: 0.15
+  die_routing_overhead_frac: 0.12
+  # Production-tile fmax in multi-domain mode (1.5 GHz calibrated to Taalas's published N6
+  # implied tile clock, NVIDIA H100 SM ~1.83 GHz, AMD MI300 ~2.1 GHz lower
+  # bound). NOT the small-block synthesis target (which would be ~2.5 GHz
+  # but is unachievable at production-tile scale).
+  clock_mhz: 1500
+  vdd_v: 0.75
+  clock_skew_alpha: 0.0            # speculative; needs CTS-derived value
+  wire_hop_cycles: 0
+  kv_access_cycles_per_layer: 0
+  # Matches H100/B200/MI300 tile scale: ~16 mm^2 synchronous islands with
+  # 3-cycle async-FIFO crossings. Reproduces Taalas's 17K tok/s headline.
+  clock_domain_area_mm2: 0    # 0 = derive from per-tile area
+  crossing_cycles_per_hop: 3

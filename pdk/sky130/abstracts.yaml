@@ -1,0 +1,47 @@
+# Macro-contract abstract constants for the SKY130 pack: cell pitch,
+# pin plan, rails geometry, and per-unit pin capacitances, all derived
+# from the anchor macro below. `ankhdjet pdk validate sky130` asserts
+# that these constants regenerate the anchor's extracted LEF.
+anchor_note: the as-built, signed-off SKY130 macro
+anchor:
+  rows: 64
+  cols: 32
+  lef: anchors/macro_array_pc_64x32_checker.lef
+
+col_pitch: 1.700
+row_pitch: 1.300
+tap_every: 8
+edge_w: 0.200            # width = cols*col_pitch + edge_w
+
+wl_y0: 0.900
+wl_h: 0.220
+wl_w: 0.390
+wl_layer: met1
+
+blp_x0: 1.400
+bln_x0: 0.550
+bl_w: 0.300
+blp_layer: met4
+bln_layer: met3
+bln_top_pad: 0.280       # BLN strip top above the last WL
+blp_extra: 3.400         # BLP reaches the precharge row
+rails_extra: 5.500       # rails region above the BLN top
+
+pre_x_frac: 0.28727106227106227
+pre_w: 0.410
+pre_h: 3.465
+pre_layer: met3
+
+rail_layer_lo: met1
+rail_layer_hi: met4
+vpwr_lo_y: [1.450, 1.050]
+vgnd_lo_y: [0.600, 0.200]
+vpwr_hi_y: [1.550, 0.250]
+rail_inset: 0.100
+
+# Measured at the anchor shape (64x32), expressed per unit.
+cap_wl_per_col: 0.9375
+cap_pre_per_col: 3.28125
+cap_bl_per_row: 0.9375
+bl_max_cap: 450.0
+vdd: 1.80

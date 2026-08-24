@@ -1,0 +1,16 @@
+* bitcell_v4 schematic — 1T NOR-array NMOS bitcell with gate-top
+* contact. LVS reference for the layout in bitcell_v4.mag.
+*
+* Sizing: W=0.42 um (SKY130 nfet_01v8 minimum), L=0.17 um (widened
+* from 0.15 to enable a 0.17x0.17 licon1 contact on the gate stub).
+* BL discharge sweep at SS@N=64 lands at 1.39 ns vs the 1.5 ns sense
+* budget (0.11 ns margin).
+*
+* External ports: D (drain), S (source), G (gate, contacted out to
+* metal1 for array-level WL routing). The bitcell layout now has a
+* hand-painted poly cap + licon1 + LI + viali + M1 stub above the
+* gate stub bringing G out as a port.
+
+.subckt bitcell_v4 D S G
+X1 D G S VSUBS sky130_fd_pr__nfet_01v8 w=0.42 l=0.17
+.ends bitcell_v4

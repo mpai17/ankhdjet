@@ -1,0 +1,12 @@
+# GF180MCU PDK pack: estimator tier only. No GF180 macro has been
+# hardened, so this pack carries no abstract or physical collateral;
+# those tiers arrive with a real port (custom cells + extracted
+# views), per the porting record.
+name: gf180
+version: "1"
+provenance: >-
+  GlobalFoundries GF180MCU open PDK. Estimator descriptor anchored to
+  the OpenROAD macro round-trip flow and the measured gf180mcuD
+  nfet_03v3 bitline characterization (1.25x SKY130 discharge at
+  3.3 V).
+tiers: [estimate]

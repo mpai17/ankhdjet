@@ -1,0 +1,24 @@
+* sa_se_band4 LVS reference: 4 sa_se comparators sharing VDD/VGND.
+* The band carries no substrate taps (the chip/tile tap network ties
+* psub to VGND externally), so nfet bulks sit on a shared floating
+* SUB net, matching the extracted layout. HITB is per-cell internal.
+.subckt sa_se_sub BL VREF HIT HITB STROBE VDD VGND SUB
+Xtail  tail STROBE VGND SUB sky130_fd_pr__nfet_01v8 w=14.0 l=1.0
+Xin_bl   int_bl  BL   tail SUB sky130_fd_pr__nfet_01v8 w=8.0 l=2.0
+Xin_ref  int_ref VREF tail SUB sky130_fd_pr__nfet_01v8 w=8.0 l=2.0
+Xncx_h  HIT  HITB int_bl  SUB sky130_fd_pr__nfet_01v8 w=4.0 l=1.0
+Xncx_hb HITB HIT  int_ref SUB sky130_fd_pr__nfet_01v8 w=4.0 l=1.0
+Xpcx_h  HIT  HITB VDD VDD sky130_fd_pr__pfet_01v8 w=8.0 l=1.0
+Xpcx_hb HITB HIT  VDD VDD sky130_fd_pr__pfet_01v8 w=8.0 l=1.0
+Xrst_h  HIT  STROBE VDD VDD sky130_fd_pr__pfet_01v8 w=0.84 l=1.0
+Xrst_hb HITB STROBE VDD VDD sky130_fd_pr__pfet_01v8 w=0.84 l=1.0
+.ends sa_se_sub
+
+.subckt sa_se_band4 VGND VDD
++ HIT_0 BL_0 VREF_0 STROBE_0 HIT_1 BL_1 VREF_1 STROBE_1
++ HIT_2 BL_2 VREF_2 STROBE_2 HIT_3 BL_3 VREF_3 STROBE_3
+X0 BL_0 VREF_0 HIT_0 hitb_0 STROBE_0 VDD VGND sub sa_se_sub
+X1 BL_1 VREF_1 HIT_1 hitb_1 STROBE_1 VDD VGND sub sa_se_sub
+X2 BL_2 VREF_2 HIT_2 hitb_2 STROBE_2 VDD VGND sub sa_se_sub
+X3 BL_3 VREF_3 HIT_3 hitb_3 STROBE_3 VDD VGND sub sa_se_sub
+.ends sa_se_band4

@@ -1,0 +1,26 @@
+# GlobalFoundries 180nm MCU PDK (real, OpenROAD-supported, OpenROAD
+# anchor at 4-17 mm^2). Scales from the SKY130 AS-BUILT anchor
+# (bitcell 2.21 um^2/weight) by the square of the feature-size ratio
+# for geometric blocks; timing anchored to direct GF180 SPICE
+# characterization (SS @ N=128 BL discharge 1.916 ns vs SKY130's
+# 1.535 ns: a measured 1.25x scale).
+name: gf180
+process_nm: 180
+node_scale: 0.521                 # (130/180)^2 ~= 0.52 (180nm is LESS dense than 130nm)
+bitcell_um2: 4.24              # 2.21 * (180/130)^2
+gate_equivalent_um2: 9.60         # 5.0 * 1.92
+transistors_per_gate: 4
+popcount_gates_per_row: 25
+synth_calibration: 1.0
+between_layer_gates_per_channel: 300
+serializer_gates_per_row: 12
+sram_um2_per_bit: 1.92             # 1.0 * 1.92
+array_overhead_frac: 0.20
+die_routing_overhead_frac: 0.15
+clock_mhz: 200                     # production-tile fmax at 180nm
+vdd_v: 5.0
+clock_skew_alpha: 0.0
+wire_hop_cycles: 0
+kv_access_cycles_per_layer: 0
+clock_domain_area_mm2: 0    # 0 = derive from per-tile area
+crossing_cycles_per_hop: 2

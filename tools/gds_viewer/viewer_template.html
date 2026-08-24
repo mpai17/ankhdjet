@@ -1,0 +1,305 @@
+<title>__TITLE__ — GDS viewer</title>
+<style>
+  :root {
+    --gold: #C6942E; --gold-ink: #9A7222;
+    --bg: #FAF7F0; --panel: #FFFFFF; --panel2: #F3EEE3;
+    --ink: #1C1B18; --mut: #6E6A60; --line: #E4DECF;
+    --canvas: #0A0B0E; --ok: #2E7D4F;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #131318; --panel: #1A1B21; --panel2: #22232B;
+      --ink: #ECE9E1; --mut: #97938A; --line: #2E2F38;
+      --gold-ink: #D9AF52; --ok: #5BBd85;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #131318; --panel: #1A1B21; --panel2: #22232B;
+    --ink: #ECE9E1; --mut: #97938A; --line: #2E2F38;
+    --gold-ink: #D9AF52; --ok: #5BBD85;
+  }
+  :root[data-theme="light"] {
+    --bg: #FAF7F0; --panel: #FFFFFF; --panel2: #F3EEE3;
+    --ink: #1C1B18; --mut: #6E6A60; --line: #E4DECF;
+    --gold-ink: #9A7222; --ok: #2E7D4F;
+  }
+  html, body { margin: 0; height: 100%; }
+  #app {
+    position: fixed; inset: 0; display: flex; flex-direction: column;
+    background: var(--bg); color: var(--ink);
+    font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+          font-variant-numeric: tabular-nums; }
+
+  header {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--panel);
+  }
+  .glyph { width: 30px; height: 30px; border-radius: 8px; background: var(--gold);
+           color: #17181C; display: grid; place-items: center;
+           font-size: 18px; font-weight: 700; }
+  h1 { font-size: 16px; margin: 0; font-weight: 650; letter-spacing: .01em; }
+  h1 small { color: var(--mut); font-weight: 450; margin-left: 8px; }
+  .chips { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { font-size: 12px; padding: 3px 10px; border-radius: 999px;
+          border: 1px solid var(--line); background: var(--panel2); color: var(--mut); }
+  .chip.ok { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 35%, transparent); }
+
+  main { flex: 1; display: flex; min-height: 0; }
+  aside {
+    width: 248px; flex: none; overflow-y: auto; background: var(--panel);
+    border-right: 1px solid var(--line); padding: 10px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .presets button {
+    font: 600 12px/1 system-ui, sans-serif; color: var(--ink);
+    background: var(--panel2); border: 1px solid var(--line);
+    border-radius: 7px; padding: 7px 0; cursor: pointer;
+  }
+  .presets button:hover { border-color: var(--gold); }
+  .lyr-list { display: flex; flex-direction: column; gap: 2px; }
+  .lyr {
+    display: flex; align-items: center; gap: 9px; padding: 5px 7px;
+    border-radius: 7px; cursor: pointer; user-select: none;
+  }
+  .lyr:hover { background: var(--panel2); }
+  .lyr input { accent-color: var(--gold); margin: 0; }
+  .sw { width: 14px; height: 14px; border-radius: 4px; flex: none;
+        box-shadow: inset 0 0 0 1px rgba(0,0,0,.25); }
+  .lyr .nm { flex: 1; font-weight: 550; font-size: 13px; }
+  .lyr .gd { color: var(--mut); font-size: 11px; }
+  .lyr.off .nm, .lyr.off .gd { color: var(--mut); }
+  .lyr.off .sw { opacity: .3; }
+  .about { margin-top: auto; border-top: 1px solid var(--line); padding-top: 9px;
+           color: var(--mut); font-size: 11.5px; }
+  .about:empty { display: none; }
+  .about b { color: var(--gold-ink); font-weight: 600; }
+
+  #stage { flex: 1; position: relative; min-width: 0; background: var(--canvas); }
+  #cv { position: absolute; inset: 0; width: 100%; height: 100%;
+        cursor: grab; touch-action: none; }
+  #cv.panning { cursor: grabbing; }
+  .hud { position: absolute; font-size: 12px; pointer-events: none; }
+  #readout { top: 10px; right: 12px; color: #D8D5CC; background: rgba(10,11,14,.72);
+             padding: 4px 10px; border-radius: 7px; border: 1px solid #2A2C35; }
+  #readout b { color: #E5C453; font-weight: 600; }
+  #scalebar { bottom: 14px; right: 14px; color: #D8D5CC; text-align: right; }
+  #sbline { height: 5px; border: 1px solid #D8D5CC; border-top: none;
+            margin-top: 3px; }
+  #ctrls { position: absolute; bottom: 12px; left: 12px; display: flex; gap: 6px; }
+  #ctrls button {
+    width: 34px; height: 34px; border-radius: 8px; cursor: pointer;
+    border: 1px solid #2A2C35; background: rgba(20,21,27,.85); color: #D8D5CC;
+    font: 600 14px/1 system-ui, sans-serif;
+  }
+  #ctrls button.wide { width: auto; padding: 0 12px; }
+  #ctrls button:hover { border-color: #E5C453; color: #E5C453; }
+  #hint { bottom: 14px; left: 50%; transform: translateX(-50%);
+          color: #6E7180; font-size: 11.5px; }
+  button:focus-visible, .lyr:focus-within { outline: 2px solid var(--gold); outline-offset: 1px; }
+  @media (max-width: 760px) {
+    aside { position: absolute; z-index: 5; height: 40%; bottom: 0; width: 100%;
+            border-right: none; border-top: 1px solid var(--line); }
+    main { flex-direction: column; }
+    #hint { display: none; }
+  }
+</style>
+
+<div id="app">
+  <header>
+    <div class="glyph">☥</div>
+    <h1>__TITLE__ <small>__SUB__</small></h1>
+    <div class="chips">
+      <span class="chip mono">__DIEW__ × __DIEH__ µm</span>
+      <span class="chip">SKY130</span>
+    </div>
+  </header>
+  <main>
+    <aside id="panel">
+      <div class="presets">
+        <button data-p="all">All</button><button data-p="none">None</button>
+        <button data-p="feol">FEOL</button><button data-p="beol">Routing</button>
+      </div>
+      <div class="lyr-list" id="lyrs"></div>
+      <div class="about">__ABOUT__</div>
+    </aside>
+    <div id="stage">
+      <canvas id="cv"></canvas>
+      <div class="hud mono" id="readout">x <b>—</b> y <b>—</b> µm</div>
+      <div class="hud mono" id="scalebar"><span id="sblabel">20 µm</span><div id="sbline"></div></div>
+      <div class="hud" id="ctrls">
+        <button id="zin" title="Zoom in">+</button>
+        <button id="zout" title="Zoom out">−</button>
+        <button id="fit" class="wide" title="Fit die">Fit</button>
+        <button id="one" class="wide" title="1 image px = 1 screen px">1:1</button>
+      </div>
+      <div class="hud" id="hint">wheel to zoom · drag to pan · double-click to zoom in</div>
+    </div>
+  </main>
+</div>
+
+<script>
+"use strict";
+const LAYERS = __LAYERS__;
+const DIE = { w: __DIEW__, h: __DIEH__ };
+const IMG = { w: __IMGW__, h: __IMGH__ };
+
+const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+const comp = document.createElement("canvas");
+comp.width = IMG.w; comp.height = IMG.h;
+const cctx = comp.getContext("2d");
+
+const state = { s: 0.3, tx: 0, ty: 0 };   // screen = img*s + t
+let dpr = 1;
+
+function resize() {
+  dpr = window.devicePixelRatio || 1;
+  const r = cv.getBoundingClientRect();
+  cv.width = Math.round(r.width * dpr);
+  cv.height = Math.round(r.height * dpr);
+  render();
+}
+
+function composite() {
+  cctx.clearRect(0, 0, IMG.w, IMG.h);
+  for (const L of LAYERS) {
+    if (!L.on || !L.img) continue;
+    cctx.globalAlpha = L.alpha;
+    cctx.drawImage(L.img, 0, 0);
+  }
+  cctx.globalAlpha = 1;
+  render();
+}
+
+function render() {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = "#0A0B0E";
+  ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.setTransform(state.s * dpr, 0, 0, state.s * dpr, state.tx * dpr, state.ty * dpr);
+  ctx.imageSmoothingEnabled = state.s < 1;
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(comp, 0, 0);
+  drawScalebar();
+}
+
+function drawScalebar() {
+  const umPerPx = DIE.w / IMG.w / state.s;       // µm per screen px
+  const target = 120 * umPerPx;
+  const pow = Math.pow(10, Math.floor(Math.log10(target)));
+  let nice = pow;
+  for (const m of [1, 2, 5, 10]) if (m * pow <= target) nice = m * pow;
+  const px = nice / umPerPx;
+  document.getElementById("sbline").style.width = px.toFixed(0) + "px";
+  document.getElementById("sblabel").textContent =
+    nice >= 1 ? nice.toFixed(0) + " µm" : (nice * 1000).toFixed(0) + " nm";
+}
+
+function fit() {
+  const r = cv.getBoundingClientRect();
+  state.s = Math.min(r.width / IMG.w, r.height / IMG.h) * 0.94;
+  state.tx = (r.width - IMG.w * state.s) / 2;
+  state.ty = (r.height - IMG.h * state.s) / 2;
+  render();
+}
+
+function zoomAt(px, py, f) {
+  const s2 = Math.min(Math.max(state.s * f, 0.02), 48);
+  const k = s2 / state.s;
+  state.tx = px - (px - state.tx) * k;
+  state.ty = py - (py - state.ty) * k;
+  state.s = s2;
+  render();
+}
+
+cv.addEventListener("wheel", e => {
+  e.preventDefault();
+  const r = cv.getBoundingClientRect();
+  zoomAt(e.clientX - r.left, e.clientY - r.top, Math.pow(1.0015, -e.deltaY));
+}, { passive: false });
+
+let pan = null;
+cv.addEventListener("pointerdown", e => {
+  cv.setPointerCapture(e.pointerId);
+  pan = { x: e.clientX, y: e.clientY, tx: state.tx, ty: state.ty };
+  cv.classList.add("panning");
+});
+cv.addEventListener("pointermove", e => {
+  const r = cv.getBoundingClientRect();
+  if (pan) {
+    state.tx = pan.tx + (e.clientX - pan.x);
+    state.ty = pan.ty + (e.clientY - pan.y);
+    render();
+  }
+  const ix = (e.clientX - r.left - state.tx) / state.s;
+  const iy = (e.clientY - r.top - state.ty) / state.s;
+  const xu = ix * DIE.w / IMG.w, yu = DIE.h - iy * DIE.h / IMG.h;
+  const ro = document.getElementById("readout");
+  if (xu >= 0 && xu <= DIE.w && yu >= 0 && yu <= DIE.h)
+    ro.innerHTML = "x <b>" + xu.toFixed(2) + "</b> y <b>" + yu.toFixed(2) + "</b> µm";
+  else ro.innerHTML = "x <b>—</b> y <b>—</b> µm";
+});
+["pointerup", "pointercancel"].forEach(t => cv.addEventListener(t, () => {
+  pan = null; cv.classList.remove("panning");
+}));
+cv.addEventListener("dblclick", e => {
+  const r = cv.getBoundingClientRect();
+  zoomAt(e.clientX - r.left, e.clientY - r.top, 2);
+});
+
+document.getElementById("zin").onclick = () => zoomAt(cv.clientWidth / 2, cv.clientHeight / 2, 1.5);
+document.getElementById("zout").onclick = () => zoomAt(cv.clientWidth / 2, cv.clientHeight / 2, 1 / 1.5);
+document.getElementById("fit").onclick = fit;
+document.getElementById("one").onclick = () => {
+  const r = cv.getBoundingClientRect();
+  const cx = (r.width / 2 - state.tx) / state.s, cy = (r.height / 2 - state.ty) / state.s;
+  state.s = 1;
+  state.tx = r.width / 2 - cx; state.ty = r.height / 2 - cy;
+  render();
+};
+
+// layer panel
+const FEOL = ["nwell", "psdm", "nsdm", "tap", "diff", "poly", "licon"];
+const BEOL = ["li1", "mcon", "met1", "via", "met2", "via2", "met3", "via3", "met4"];
+const list = document.getElementById("lyrs");
+for (const L of [...LAYERS].reverse()) {          // top of stack listed first
+  const row = document.createElement("label");
+  row.className = "lyr" + (L.on ? "" : " off");
+  row.innerHTML =
+    '<input type="checkbox"' + (L.on ? " checked" : "") + '>' +
+    '<span class="sw" style="background:' + L.color + '"></span>' +
+    '<span class="nm">' + L.id + '</span>' +
+    '<span class="gd mono">' + L.l + "/" + L.d + " · " + L.count.toLocaleString() + "</span>";
+  row.querySelector("input").addEventListener("change", ev => {
+    L.on = ev.target.checked;
+    row.classList.toggle("off", !L.on);
+    composite();
+  });
+  L.row = row;
+  list.appendChild(row);
+}
+document.querySelectorAll(".presets button").forEach(b => b.onclick = () => {
+  const p = b.dataset.p;
+  for (const L of LAYERS) {
+    L.on = p === "all" ? true
+         : p === "none" ? false
+         : p === "feol" ? FEOL.includes(L.id)
+         : BEOL.includes(L.id);
+    L.row.querySelector("input").checked = L.on;
+    L.row.classList.toggle("off", !L.on);
+  }
+  composite();
+});
+
+// decode all layers, then first composite + fit
+Promise.all(LAYERS.map(L => new Promise(res => {
+  const im = new Image();
+  im.onload = () => { L.img = im; res(); };
+  im.onerror = () => res();
+  im.src = L.src;
+}))).then(() => { composite(); fit(); });
+
+new ResizeObserver(resize).observe(cv);
+resize(); fit();
+</script>

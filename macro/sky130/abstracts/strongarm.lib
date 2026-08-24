@@ -1,0 +1,115 @@
+/* strongarm StrongARM SA Liberty (auto-generated)
+ * Bbox: 15.00 x 57.50 um = 862 um^2.
+ * Resolve time SS@100mV BL differential: ~2.2 ns (from MC).
+ * Inputs: BLP, BLN (analog), STROBE (digital trigger).
+ * Outputs: OUTP, OUTM (regenerated digital).
+ * Power: VDD, VGND. NWELL biased internally to VDD via macro's
+ * local rail (VPB not exposed -- OpenRAM convention).
+ */
+
+library (strongarm) {
+  technology (cmos);
+  delay_model : table_lookup;
+  time_unit                    : "1ns";
+  voltage_unit                 : "1V";
+  current_unit                 : "1mA";
+  pulling_resistance_unit      : "1kohm";
+  capacitive_load_unit (1, ff);
+  leakage_power_unit           : "1nW";
+  default_input_pin_cap        : 0.001;
+  default_inout_pin_cap        : 0.001;
+  default_output_pin_cap       : 0.000;
+  nom_voltage                  : 1.80;
+  nom_temperature              : 25.0;
+  nom_process                  : 1.0;
+  input_threshold_pct_rise     : 50;
+  input_threshold_pct_fall     : 50;
+  output_threshold_pct_rise    : 50;
+  output_threshold_pct_fall    : 50;
+  slew_lower_threshold_pct_rise: 20;
+  slew_upper_threshold_pct_rise: 80;
+  slew_lower_threshold_pct_fall: 20;
+  slew_upper_threshold_pct_fall: 80;
+  slew_derate_from_library     : 1.0;
+  voltage_map (VDD, 1.80);
+  voltage_map (VGND, 0.0);
+
+  lu_table_template (sa_nldm_3x3) {
+    variable_1 : input_net_transition;
+    variable_2 : total_output_net_capacitance;
+    index_1 ("0.05, 0.20, 0.50");
+    index_2 ("1.0, 10.0, 50.0");
+  }
+
+  cell (strongarm) {
+    is_macro_cell : true;
+    area : 862.5;
+    pg_pin (VDD)  { pg_type : primary_power;  voltage_name : VDD; }
+    pg_pin (VGND) { pg_type : primary_ground; voltage_name : VGND; }
+
+    pin (STROBE) {
+      direction : input;
+      clock     : true;
+      capacitance : 4.0;
+      max_transition : 0.5;
+    }
+    pin (BLP) {
+      direction : input;
+      capacitance : 30.0;
+      max_transition : 1.0;
+    }
+    pin (BLN) {
+      direction : input;
+      capacitance : 30.0;
+      max_transition : 1.0;
+    }
+    pin (TAIL) {
+      direction : inout;
+      capacitance : 5.0;
+    }
+
+    pin (OUTP) {
+      direction : output;
+      capacitance : 0.0;
+      max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE";
+        timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3) {
+          values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80");
+        }
+        cell_fall (sa_nldm_3x3) {
+          values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80");
+        }
+        rise_transition (sa_nldm_3x3) {
+          values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30");
+        }
+        fall_transition (sa_nldm_3x3) {
+          values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30");
+        }
+      }
+    }
+
+    pin (OUTM) {
+      direction : output;
+      capacitance : 0.0;
+      max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE";
+        timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3) {
+          values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80");
+        }
+        cell_fall (sa_nldm_3x3) {
+          values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80");
+        }
+        rise_transition (sa_nldm_3x3) {
+          values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30");
+        }
+        fall_transition (sa_nldm_3x3) {
+          values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30");
+        }
+      }
+    }
+  }
+}

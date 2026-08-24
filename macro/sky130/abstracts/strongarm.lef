@@ -1,0 +1,92 @@
+VERSION 5.7 ;
+  NOWIREEXTENSIONATPIN ON ;
+  DIVIDERCHAR "/" ;
+  BUSBITCHARS "[]" ;
+MACRO strongarm
+  CLASS BLOCK ;
+  FOREIGN strongarm ;
+  ORIGIN 7.000 0.000 ;
+  SIZE 15.000 BY 57.500 ;
+  PIN OUTP
+    ANTENNAGATEAREA 12.000000 ;
+    ANTENNADIFFAREA 3.723600 ;
+    PORT
+      LAYER met2 ;
+        RECT -7.000 51.850 8.000 52.550 ;
+    END
+  END OUTP
+  PIN OUTM
+    ANTENNAGATEAREA 12.000000 ;
+    ANTENNADIFFAREA 3.723600 ;
+    PORT
+      LAYER met2 ;
+        RECT -7.000 52.850 8.000 53.550 ;
+    END
+  END OUTM
+  PIN STROBE
+    ANTENNAGATEAREA 15.679999 ;
+    PORT
+      LAYER met2 ;
+        RECT -7.000 53.850 8.000 54.550 ;
+    END
+  END STROBE
+  PIN VGND
+    USE GROUND ;
+    PORT
+      LAYER met2 ;
+        RECT -7.000 56.050 8.000 56.700 ;
+    END
+    PORT
+      LAYER li1 ;
+        RECT -6.500 8.000 -5.500 9.000 ;
+    END
+    PORT
+      LAYER li1 ;
+        RECT -6.500 27.000 -5.500 28.000 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT -7.000 56.200 8.000 57.200 ;
+    END
+  END VGND
+  PIN BLP
+    ANTENNAGATEAREA 16.000000 ;
+    PORT
+      LAYER met2 ;
+        RECT -1.960 23.200 -1.460 23.660 ;
+    END
+  END BLP
+  PIN BLN
+    ANTENNAGATEAREA 16.000000 ;
+    PORT
+      LAYER met2 ;
+        RECT 4.040 23.200 4.540 23.660 ;
+    END
+  END BLN
+  PIN VDD
+    ANTENNADIFFAREA 6.567200 ;
+    PORT
+      LAYER met4 ;
+        RECT -7.000 55.000 8.000 55.500 ;
+    END
+  END VDD
+  OBS
+      LAYER nwell ;
+        RECT -7.000 38.000 7.000 50.000 ;
+      LAYER li1 ;
+        RECT -6.500 28.170 6.700 52.500 ;
+        RECT -5.330 26.830 6.700 28.170 ;
+        RECT -6.500 9.170 6.700 26.830 ;
+        RECT -5.330 7.830 6.700 9.170 ;
+        RECT -6.500 3.580 6.700 7.830 ;
+      LAYER met1 ;
+        RECT -6.470 3.600 7.280 56.580 ;
+      LAYER met2 ;
+        RECT -7.000 54.830 8.000 55.500 ;
+        RECT -7.000 32.970 8.000 51.570 ;
+      LAYER met3 ;
+        RECT -0.250 55.000 0.250 56.700 ;
+  END
+END strongarm
+END LIBRARY
+

@@ -1,0 +1,46 @@
+* StrongARM SA schematic — LVS reference for the hand-routed
+* layout in strongarm.mag.
+*
+* Sizing: SS-mismatch-validated. The earlier "production middle-ground"
+* (W=2/L=0.3 input pair, ~5 um^2/SA) gave empirical sigma_offset
+* ~170 mV at SS in 200-trial Monte Carlo (68% correct at 100 mV BL
+* differential). To hit the 99.9% correct gate at 100 mV under realistic
+* SKY130 mismatch, sigma_offset must be <= 30 mV. By Pelgrom
+* (sigma_VTH ~ 1/sqrt(W*L)), input-pair area must grow ~27x: from
+* 0.6 um^2 to 16 um^2. The W=8/L=2 input pair below lands inside the
+* +/-50 mV offset budget (Monte Carlo 250/250 at the realistic signal).
+*
+* Topology: classical clocked StrongARM latch.
+*   - Tail NMOS gated by STROBE pulls common-source to VGND
+*   - Input pair NMOS gates on BLP / BLN (the bit-line differential)
+*   - Cross-coupled NMOS pull-down (INTP/INTM -> drain of xc_n -> outp/outm)
+*   - Cross-coupled PMOS pull-up (vdd -> drain of xc_p -> outp/outm)
+*   - Reset PMOS gated by STROBE precharges OUTP/OUTM to VDD when STROBE=0.
+*
+* Per-SA area ~50 um^2 = ~3% of the 256x256 cirom_array (42600 um^2);
+* tiny fraction of the wrapped macro and negligible at die scale.
+
+.subckt strongarm BLP BLN OUTP OUTM STROBE VDD VGND
+
+* Tail NMOS — sized 5x larger to source the bigger input pair current
+Xtail   tail strobe vgnd vgnd sky130_fd_pr__nfet_01v8 w=14.0 l=1.0
+
+* Input pair — W=10 / L=2 (area=20 um^2 each) for sigma_VTH=0.75 mV
+Xinp    intp blp tail vgnd sky130_fd_pr__nfet_01v8 w=8.0 l=2.0
+Xinm    intm bln tail vgnd sky130_fd_pr__nfet_01v8 w=8.0 l=2.0
+
+* Cross-coupled NMOS pull-down — bigger to keep regenerative ratio
+* matching input-pair gm; sigma_VTH=1.68 mV.
+Xncxp   outp outm intp vgnd sky130_fd_pr__nfet_01v8 w=4.0 l=1.0
+Xncxm   outm outp intm vgnd sky130_fd_pr__nfet_01v8 w=4.0 l=1.0
+
+* Cross-coupled PMOS pull-up — sized 2x relative to NMOS for u_p < u_n.
+Xpcxp   outp outm vdd vdd sky130_fd_pr__pfet_01v8 w=8.0 l=1.0
+Xpcxm   outm outp vdd vdd sky130_fd_pr__pfet_01v8 w=8.0 l=1.0
+
+* Reset PMOS — small (precharge time is fast even at minimum-W since
+* C_load on OUTP/OUTM is small and reset has full STROBE_LOW window).
+Xrstp   outp strobe vdd vdd sky130_fd_pr__pfet_01v8 w=0.84 l=1.0
+Xrstm   outm strobe vdd vdd sky130_fd_pr__pfet_01v8 w=0.84 l=1.0
+
+.ends strongarm

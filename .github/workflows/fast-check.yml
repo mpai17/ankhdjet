@@ -1,0 +1,74 @@
+name: fast-check
+
+# Per-push gate, two tiers on GitHub-hosted runners:
+#   package  - the pip artifact's tier: the pure-Python suite at the exact
+#              dependency envelope a pip user has (core + pytest, no torch,
+#              no flow), then a built-wheel integrity smoke (CLI + bundled
+#              PDK data resolving from the wheel outside the repo).
+#   emission - the silicon-side tier: the Verilator + PyTorch-bridge tests
+#              (tools/run_tests.sh --fast). Heavy SPICE suites are local
+#              receipts, not CI.
+on:
+  push:
+    # Skip when a push touches only docs, archived code, or repo metadata --
+    # none of it affects the tests. paths-ignore skips a push ONLY IF every
+    # changed file matches, so a mixed docs+code push still runs.
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'archive/**'
+      - 'LICENSE'
+      - '.gitignore'
+  workflow_dispatch:
+
+# A newer push on the same ref cancels the older in-flight run.
+concurrency:
+  group: fast-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Core-envelope suite (no torch, no flow)
+        run: |
+          uv sync --no-default-groups --group test
+          uv run pytest -m package -q
+
+      - name: Wheel integrity smoke
+        run: |
+          uv build --wheel
+          python3 -m venv /tmp/coldvenv
+          /tmp/coldvenv/bin/pip -q install dist/ankhdjet-*.whl
+          cd /tmp
+          ./coldvenv/bin/ankhdjet --version
+          ./coldvenv/bin/ankhdjet estimate -- --list-pdks
+          ./coldvenv/bin/python -c "from ankhdjet.estimate.throughput_calibration import load_calibrated; c = load_calibrated(); assert c, 'bundled calibration data missing'; print('bundled nodes:', sorted(c))"
+
+  emission:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install simulators
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends verilator iverilog
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Sync uv env
+        run: uv sync
+
+      - name: Fast regression tier
+        run: bash tools/run_tests.sh --fast

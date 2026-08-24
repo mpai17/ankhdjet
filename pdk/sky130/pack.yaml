@@ -1,0 +1,11 @@
+# SKY130 PDK pack: the reference implementation of the macro contract.
+# The physical tier's machinery lives in the repository (cell/sky130,
+# macro/sky130, librelane/); this pack carries the data tiers the
+# compiler consumes directly.
+name: sky130
+version: "1"
+provenance: >-
+  SkyWater SKY130A open PDK; estimator descriptors and abstract
+  constants anchored to the signed-off Ankhdjet macro and chips.
+tiers: [estimate, abstracts, physical]
+physical: repository

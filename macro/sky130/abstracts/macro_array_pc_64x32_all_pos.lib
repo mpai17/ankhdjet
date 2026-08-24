@@ -1,0 +1,944 @@
+/* macro_array_pc_64x32_all_pos Liberty (auto-generated from gen_abstracts.py)
+ * Bitcell array 64x32 + precharge row + VPWR rail.
+ * Bbox: 54.62 x 95.07 um = 5193 um^2.
+ * Pins: WL_<r> (input WL drive), BLP_<c>/BLN_<c> (analog BL),
+ *       VPWR (precharge source), VGND (substrate).
+ */
+
+library (macro_array_pc_64x32_all_pos) {
+  technology (cmos);
+  delay_model : table_lookup;
+  time_unit                    : "1ns";
+  voltage_unit                 : "1V";
+  current_unit                 : "1mA";
+  pulling_resistance_unit      : "1kohm";
+  capacitive_load_unit (1, ff);
+  leakage_power_unit           : "1nW";
+  default_input_pin_cap        : 0.001;
+  default_inout_pin_cap        : 0.001;
+  default_output_pin_cap       : 0.000;
+  nom_voltage                  : 1.80;
+  nom_temperature              : 25.0;
+  nom_process                  : 1.0;
+  input_threshold_pct_rise     : 50;
+  input_threshold_pct_fall     : 50;
+  output_threshold_pct_rise    : 50;
+  output_threshold_pct_fall    : 50;
+  slew_lower_threshold_pct_rise: 20;
+  slew_upper_threshold_pct_rise: 80;
+  slew_lower_threshold_pct_fall: 20;
+  slew_upper_threshold_pct_fall: 80;
+  slew_derate_from_library     : 1.0;
+  voltage_map (VPWR, 1.80);
+  voltage_map (VGND, 0.0);
+
+  cell (macro_array_pc_64x32_all_pos) {
+    is_macro_cell : true;
+    area : 5193.2;
+    pg_pin (VPWR) {
+      pg_type : primary_power;
+      voltage_name : VPWR;
+    }
+    pg_pin (VGND) {
+      pg_type : primary_ground;
+      voltage_name : VGND;
+    }
+
+    pin (WL_0) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_1) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_2) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_3) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_4) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_5) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_6) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_7) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_8) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_9) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_10) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_11) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_12) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_13) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_14) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_15) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_16) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_17) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_18) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_19) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_20) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_21) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_22) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_23) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_24) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_25) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_26) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_27) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_28) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_29) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_30) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_31) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_32) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_33) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_34) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_35) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_36) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_37) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_38) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_39) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_40) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_41) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_42) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_43) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_44) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_45) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_46) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_47) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_48) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_49) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_50) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_51) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_52) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_53) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_54) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_55) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_56) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_57) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_58) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_59) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_60) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_61) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_62) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (WL_63) {
+      direction : input;
+      capacitance : 2.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_0) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_0) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_1) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_1) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_2) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_2) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_3) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_3) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_4) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_4) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_5) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_5) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_6) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_6) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_7) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_7) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_8) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_8) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_9) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_9) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_10) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_10) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_11) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_11) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_12) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_12) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_13) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_13) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_14) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_14) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_15) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_15) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_16) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_16) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_17) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_17) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_18) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_18) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_19) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_19) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_20) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_20) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_21) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_21) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_22) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_22) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_23) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_23) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_24) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_24) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_25) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_25) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_26) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_26) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_27) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_27) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_28) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_28) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_29) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_29) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_30) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_30) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLP_31) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+    pin (BLN_31) {
+      direction : inout;
+      capacitance : 50.0;
+      related_power_pin  : VPWR;
+      related_ground_pin : VGND;
+    }
+
+  }
+}

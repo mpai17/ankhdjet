@@ -1,0 +1,43 @@
+* sa_se_band4 LVS reference: 4 sa_se comparators sharing VDD/VGND.
+* The band carries no substrate taps (the chip/tile tap network ties
+* psub to VGND externally), so nfet bulks sit on a shared floating
+* SUB net, matching the extracted layout. HITB is per-cell internal.
+.subckt sa_se_sub BL VREF HIT HITB STROBE VDD VGND SUB
+Xtail  tail STROBE VGND SUB sky130_fd_pr__nfet_01v8 w=14.0 l=1.0
+Xin_bl   int_bl  BL   tail SUB sky130_fd_pr__nfet_01v8 w=8.0 l=2.0
+Xin_ref  int_ref VREF tail SUB sky130_fd_pr__nfet_01v8 w=8.0 l=2.0
+Xncx_h  HIT  HITB int_bl  SUB sky130_fd_pr__nfet_01v8 w=4.0 l=1.0
+Xncx_hb HITB HIT  int_ref SUB sky130_fd_pr__nfet_01v8 w=4.0 l=1.0
+Xpcx_h  HIT  HITB VDD VDD sky130_fd_pr__pfet_01v8 w=8.0 l=1.0
+Xpcx_hb HITB HIT  VDD VDD sky130_fd_pr__pfet_01v8 w=8.0 l=1.0
+Xrst_h  HIT  STROBE VDD VDD sky130_fd_pr__pfet_01v8 w=0.84 l=1.0
+Xrst_hb HITB STROBE VDD VDD sky130_fd_pr__pfet_01v8 w=0.84 l=1.0
+.ends sa_se_sub
+
+
+.subckt sa_se_band16 VGND VDD
++ HIT_0 BL_0 VREF_0 STROBE_0 HIT_1 BL_1 VREF_1 STROBE_1
++ HIT_2 BL_2 VREF_2 STROBE_2 HIT_3 BL_3 VREF_3 STROBE_3
++ HIT_4 BL_4 VREF_4 STROBE_4 HIT_5 BL_5 VREF_5 STROBE_5
++ HIT_6 BL_6 VREF_6 STROBE_6 HIT_7 BL_7 VREF_7 STROBE_7
++ HIT_8 BL_8 VREF_8 STROBE_8 HIT_9 BL_9 VREF_9 STROBE_9
++ HIT_10 BL_10 VREF_10 STROBE_10 HIT_11 BL_11 VREF_11 STROBE_11
++ HIT_12 BL_12 VREF_12 STROBE_12 HIT_13 BL_13 VREF_13 STROBE_13
++ HIT_14 BL_14 VREF_14 STROBE_14 HIT_15 BL_15 VREF_15 STROBE_15
+X0 BL_0 VREF_0 HIT_0 hitb_0 STROBE_0 VDD VGND sub sa_se_sub
+X1 BL_1 VREF_1 HIT_1 hitb_1 STROBE_1 VDD VGND sub sa_se_sub
+X2 BL_2 VREF_2 HIT_2 hitb_2 STROBE_2 VDD VGND sub sa_se_sub
+X3 BL_3 VREF_3 HIT_3 hitb_3 STROBE_3 VDD VGND sub sa_se_sub
+X4 BL_4 VREF_4 HIT_4 hitb_4 STROBE_4 VDD VGND sub sa_se_sub
+X5 BL_5 VREF_5 HIT_5 hitb_5 STROBE_5 VDD VGND sub sa_se_sub
+X6 BL_6 VREF_6 HIT_6 hitb_6 STROBE_6 VDD VGND sub sa_se_sub
+X7 BL_7 VREF_7 HIT_7 hitb_7 STROBE_7 VDD VGND sub sa_se_sub
+X8 BL_8 VREF_8 HIT_8 hitb_8 STROBE_8 VDD VGND sub sa_se_sub
+X9 BL_9 VREF_9 HIT_9 hitb_9 STROBE_9 VDD VGND sub sa_se_sub
+X10 BL_10 VREF_10 HIT_10 hitb_10 STROBE_10 VDD VGND sub sa_se_sub
+X11 BL_11 VREF_11 HIT_11 hitb_11 STROBE_11 VDD VGND sub sa_se_sub
+X12 BL_12 VREF_12 HIT_12 hitb_12 STROBE_12 VDD VGND sub sa_se_sub
+X13 BL_13 VREF_13 HIT_13 hitb_13 STROBE_13 VDD VGND sub sa_se_sub
+X14 BL_14 VREF_14 HIT_14 hitb_14 STROBE_14 VDD VGND sub sa_se_sub
+X15 BL_15 VREF_15 HIT_15 hitb_15 STROBE_15 VDD VGND sub sa_se_sub
+.ends sa_se_band16

@@ -1,0 +1,553 @@
+{
+    "DESIGN_NAME": "cirom_chip_analog",
+    "VERILOG_FILES": [
+        "dir::../../rtl/chip/cirom_chip_analog.sv"
+    ],
+    "CLOCK_PORT": "clk",
+    "CLOCK_PERIOD": 25.0,
+    "PDK": "sky130A",
+    "STD_CELL_LIBRARY": "sky130_fd_sc_hd",
+    "USE_POWER_PINS": true,
+    "VERILOG_DEFINES": [
+        "ANKHDJET_SYNTH",
+        "ANKHDJET_ARRAY_MODULE=macro_array_pc_64x32_test0"
+    ],
+    "MACROS": {
+        "sa_se_band16": {
+            "gds": [
+                "dir::../../macro/sky130/abstracts/sa_se_band16.gds"
+            ],
+            "lef": [
+                "dir::../../macro/sky130/abstracts/sa_se_band16.lef"
+            ],
+            "lib": {
+                "*": [
+                    "dir::../../macro/sky130/abstracts/sa_se_band16.lib"
+                ]
+            },
+            "nl": [
+                "dir::../../macro/sky130/abstracts/sa_se_band16.bb.v"
+            ]
+        },
+        "macro_array_pc_64x32_test0": {
+            "gds": [
+                "dir::../../cell/sky130/macro/build/macro_array_pc_64x32_test0.gds"
+            ],
+            "lef": [
+                "dir::../../macro/sky130/abstracts/macro_array_pc_64x32_test0.lef"
+            ],
+            "lib": {
+                "*": [
+                    "dir::../../macro/sky130/abstracts/macro_array_pc_64x32_test0.lib"
+                ]
+            },
+            "nl": [
+                "dir::../../macro/sky130/abstracts/macro_array_pc_64x32_test0.bb.v"
+            ]
+        }
+    },
+    "FP_SIZING": "absolute",
+    "DIE_AREA": [
+        0,
+        0,
+        850,
+        300
+    ],
+    "FP_CORE_MARGIN": 8,
+    "MACRO_PLACEMENT_CFG": "dir::macro_bands.cfg",
+    "IO_PIN_ORDER_CFG": "dir::pin_order.cfg",
+    "DESIGN_IS_CORE": true,
+    "RUN_LINTER": true,
+    "RUN_HEURISTIC_DIODE_INSERTION": false,
+    "SYNTH_AUTONAME": true,
+    "PDN_CONNECT_MACROS_TO_GRID": true,
+    "PDN_MACRO_CONNECTIONS": [
+        "^u_macro$ VPWR VGND VPWR VGND",
+        "^u_band_.*$ VPWR VGND VDD VGND"
+    ],
+    "PDN_VPITCH": 20,
+    "PDN_VOFFSET": 5,
+    "PDN_HPITCH": 40,
+    "PDN_HOFFSET": 20,
+    "PDN_HORIZONTAL_HALO": 1,
+    "PDN_VERTICAL_HALO": 1,
+    "RUN_IRDROP_REPORT": false,
+    "MAGIC_EXT_USE_GDS": true,
+    "MAGIC_EXT_ABSTRACT_CELLS": [
+        "^sa_se_band16$"
+    ],
+    "MAGIC_WRITE_FULL_LEF": false,
+    "SYNTH_HIERARCHY_MODE": "keep",
+    "GRT_MACRO_EXTENSION": 1,
+    "FP_TAPCELL_DIST": 9,
+    "FP_MACRO_HORIZONTAL_HALO": 3,
+    "FP_MACRO_VERTICAL_HALO": 3,
+    "LVS_IGNORE_CELLS": [
+        "sky130_fd_sc_hd__clkdlybuf4s25_1",
+        "sky130_fd_sc_hd__diode_2"
+    ],
+    "GRT_ALLOW_CONGESTION": true,
+    "ROUTING_OBSTRUCTIONS": [
+        "met2 599.10 196.50 599.45 198.70"
+    ],
+    "EXTRA_SPICE_MODELS": [
+        "dir::../../macro/sky130/abstracts/macro_array_pc_64x32_test0.lvs.spice"
+    ],
+    "FALLBACK_SDC_FILE": "dir::cirom_chip_analog.sdc",
+    "RSZ_DONT_TOUCH_RX": "^vref$",
+    "DESIGN_REPAIR_MAX_SLEW_PCT": 40,
+    "GRT_DESIGN_REPAIR_MAX_SLEW_PCT": 60,
+    "GRT_DESIGN_REPAIR_MAX_CAP_PCT": 60,
+    "DESIGN_REPAIR_MAX_CAP_PCT": 40,
+    "RUN_POST_GRT_DESIGN_REPAIR": true,
+    "MANUAL_GLOBAL_PLACEMENTS": {
+        "g_hitbuf[0].u_bp": {
+            "location": [
+                520.2,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[0].u_bn": {
+            "location": [
+                600.2,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[1].u_bp": {
+            "location": [
+                523.6,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[1].u_bn": {
+            "location": [
+                603.6,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[2].u_bp": {
+            "location": [
+                527.0,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[2].u_bn": {
+            "location": [
+                607.0,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[3].u_bp": {
+            "location": [
+                530.4,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[3].u_bn": {
+            "location": [
+                610.4,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[4].u_bp": {
+            "location": [
+                533.8,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[4].u_bn": {
+            "location": [
+                613.8,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[5].u_bp": {
+            "location": [
+                537.2,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[5].u_bn": {
+            "location": [
+                617.2,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[6].u_bp": {
+            "location": [
+                540.6,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[6].u_bn": {
+            "location": [
+                620.6,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[7].u_bp": {
+            "location": [
+                544.0,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[7].u_bn": {
+            "location": [
+                624.0,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[8].u_bp": {
+            "location": [
+                547.4,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[8].u_bn": {
+            "location": [
+                627.4,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[9].u_bp": {
+            "location": [
+                550.8,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[9].u_bn": {
+            "location": [
+                630.8,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[10].u_bp": {
+            "location": [
+                554.2,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[10].u_bn": {
+            "location": [
+                634.2,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[11].u_bp": {
+            "location": [
+                557.6,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[11].u_bn": {
+            "location": [
+                637.6,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[12].u_bp": {
+            "location": [
+                561.0,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[12].u_bn": {
+            "location": [
+                641.0,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[13].u_bp": {
+            "location": [
+                564.4,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[13].u_bn": {
+            "location": [
+                644.4,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[14].u_bp": {
+            "location": [
+                567.8,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[14].u_bn": {
+            "location": [
+                647.8,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[15].u_bp": {
+            "location": [
+                571.2,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[15].u_bn": {
+            "location": [
+                651.2,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[16].u_bp": {
+            "location": [
+                680.2,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[16].u_bn": {
+            "location": [
+                760.2,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[17].u_bp": {
+            "location": [
+                683.6,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[17].u_bn": {
+            "location": [
+                763.6,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[18].u_bp": {
+            "location": [
+                687.0,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[18].u_bn": {
+            "location": [
+                767.0,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[19].u_bp": {
+            "location": [
+                690.4,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[19].u_bn": {
+            "location": [
+                770.4,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[20].u_bp": {
+            "location": [
+                693.8,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[20].u_bn": {
+            "location": [
+                773.8,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[21].u_bp": {
+            "location": [
+                697.2,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[21].u_bn": {
+            "location": [
+                777.2,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[22].u_bp": {
+            "location": [
+                700.6,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[22].u_bn": {
+            "location": [
+                780.6,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[23].u_bp": {
+            "location": [
+                704.0,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[23].u_bn": {
+            "location": [
+                784.0,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[24].u_bp": {
+            "location": [
+                707.4,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[24].u_bn": {
+            "location": [
+                787.4,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[25].u_bp": {
+            "location": [
+                710.8,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[25].u_bn": {
+            "location": [
+                790.8,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[26].u_bp": {
+            "location": [
+                714.2,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[26].u_bn": {
+            "location": [
+                794.2,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[27].u_bp": {
+            "location": [
+                717.6,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[27].u_bn": {
+            "location": [
+                797.6,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[28].u_bp": {
+            "location": [
+                721.0,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[28].u_bn": {
+            "location": [
+                801.0,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[29].u_bp": {
+            "location": [
+                724.4,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[29].u_bn": {
+            "location": [
+                804.4,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[30].u_bp": {
+            "location": [
+                727.8,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[30].u_bn": {
+            "location": [
+                807.8,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[31].u_bp": {
+            "location": [
+                731.2,
+                119.5
+            ],
+            "orientation": "N"
+        },
+        "g_hitbuf[31].u_bn": {
+            "location": [
+                811.2,
+                119.5
+            ],
+            "orientation": "N"
+        }
+    }
+}

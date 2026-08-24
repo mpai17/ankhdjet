@@ -1,0 +1,93 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ankhdjet"
+version = "0.1.0"
+description = "Compiler that hardwires ternary BitNet weights into mask-programmed compute-in-ROM silicon on open PDKs"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.11"
+# Core: the frontend (checkpoint -> ternary IR -> mask programs) and the
+# calibrated area/throughput estimators. Torch and the silicon flow are
+# extras; the wheel must stay pip-installable in seconds.
+dependencies = [
+    "numpy>=1.26",
+    "pyyaml>=6",
+    "safetensors>=0.4",
+    "huggingface-hub>=0.24",
+]
+
+[project.optional-dependencies]
+# The PyTorch bridge oracle and transformers-side validation
+torch = [
+    "torch>=2.6",
+    "transformers>=4.45",
+    "accelerate>=1.14.0",
+]
+# The physical flow's Python side (LibreLane + geometry tooling); the full
+# flow additionally needs the open-silicon binaries (Magic, KLayout, netgen,
+# ngspice, Yosys, OpenROAD) from the repository environment.
+flow = [
+    "librelane==3.0.3",
+    "klayout>=0.30",
+    "gdstk>=1.0",
+    "pillow>=12.3.0",
+]
+
+[project.scripts]
+ankhdjet = "ankhdjet.cli:main"
+
+[project.urls]
+Repository = "https://github.com/mpai17/ankhdjet"
+
+[dependency-groups]
+# Package-tier testing: core deps + pytest only, the exact envelope a pip
+# user has (uv sync --no-default-groups --group test).
+test = [
+    "pytest>=8",
+]
+# The full repo environment (what `uv sync` installs by default): core +
+# both extras + the test runner, at the same pins as before the split.
+# After every `uv sync`, run `bash tools/apply_env_patches.sh` (the
+# librelane sign-off ECO hook).
+dev = [
+    "librelane==3.0.3",
+    "klayout>=0.30",
+    "gdstk>=1.0",
+    "torch>=2.6",
+    "transformers>=4.45",
+    "accelerate>=1.14.0",
+    "pillow>=12.3.0",
+    "pytest>=8",
+]
+
+[tool.uv]
+# Constrain the dev environment to the flow-validated interpreter series.
+environments = ["python_version >= '3.11' and python_version < '3.12'"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["ankhdjet"]
+
+[tool.hatch.build.targets.wheel.force-include]
+# Bundle the PDK descriptors + calibration data so the estimators work
+# from a bare pip install (ankhdjet.throughput_calibration.pdk_data_root
+# falls back to this copy outside a repo checkout).
+"pdk" = "ankhdjet/_pdk"
+# Bundle the emission RTL library so compiled design bundles are
+# self-contained from a bare pip install (ankhdjet.backend.bundle
+# rtl_data_root falls back to this copy; its LIB_FILES/TB_FILE list and
+# this map are asserted equal by the package test suite).
+"rtl/grid/cirom_grid_ctrl.sv" = "ankhdjet/_rtl/grid/cirom_grid_ctrl.sv"
+"rtl/grid/cirom_array_beh.sv" = "ankhdjet/_rtl/grid/cirom_array_beh.sv"
+"rtl/grid/sim/tb_grid.sv" = "ankhdjet/_rtl/grid/sim/tb_grid.sv"
+"rtl/between_layer/between_layer.sv" = "ankhdjet/_rtl/between_layer/between_layer.sv"
+"rtl/between_layer/requantize.sv" = "ankhdjet/_rtl/between_layer/requantize.sv"
+"rtl/column/cirom_nor_tile.sv" = "ankhdjet/_rtl/column/cirom_nor_tile.sv"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "package: pure-Python tier runnable with core dependencies only (gates the pip artifact)",
+]

@@ -1,0 +1,158 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="bitcell-vs-tr" name="bitcell_vs_transistor">
+    <mxGraphModel dx="1200" dy="700" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="620" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="One transistor, two jobs: general-purpose logic device vs mask-programmed ternary ROM cell"
+                style="text;html=1;align=center;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="16" width="1020" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- ================= LEFT PANEL: logic NMOS ================= -->
+        <mxCell id="lp" value="" style="rounded=0;fillColor=#F5F5F5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="60" width="480" height="420" as="geometry"/>
+        </mxCell>
+        <mxCell id="lp_t" value="Standard logic NMOS" style="text;html=1;align=center;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="68" width="480" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- three any-net stubs -->
+        <mxCell id="l_s_wire" value="" style="rounded=0;fillColor=#666666;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="182" y="150" width="6" height="145" as="geometry"/>
+        </mxCell>
+        <mxCell id="l_g_wire" value="" style="rounded=0;fillColor=#D79B00;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="277" y="150" width="6" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="l_d_wire" value="" style="rounded=0;fillColor=#666666;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="372" y="150" width="6" height="145" as="geometry"/>
+        </mxCell>
+        <mxCell id="l_s_lab" value="To: any net&#10;(P&amp;R decides)" style="text;html=1;align=center;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="130" y="108" width="110" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l_g_lab" value="To: any net&#10;(P&amp;R decides)" style="text;html=1;align=center;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="225" y="108" width="110" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l_d_lab" value="To: any net&#10;(P&amp;R decides)" style="text;html=1;align=center;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="320" y="108" width="110" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- device plan view -->
+        <mxCell id="l_diff" value="" style="rounded=0;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="120" y="280" width="320" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="l_poly" value="" style="rounded=0;fillColor=#FFE6CC;strokeColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="260" y="230" width="40" height="160" as="geometry"/>
+        </mxCell>
+        <mxCell id="l_sc" value="S" style="rounded=0;fillColor=#FFFFFF;strokeColor=#666666;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="170" y="295" width="30" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="l_dc" value="D" style="rounded=0;fillColor=#FFFFFF;strokeColor=#666666;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="360" y="295" width="30" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="l_diff_lab" value="Diffusion" style="text;html=1;align=left;fontSize=10;fontColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="122" y="342" width="80" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="l_poly_lab" value="Poly gate" style="text;html=1;align=center;fontSize=10;fontColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="240" y="392" width="80" height="16" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="l_cap" value="General-purpose device: all three terminals are wired by synthesis and place-and-route. Its role is decided per instance, at design time, across many mask layers."
+                style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=11;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="60" y="418" width="440" height="54" as="geometry"/>
+        </mxCell>
+
+        <!-- ================= RIGHT PANEL: bitcell ================= -->
+        <mxCell id="rp" value="" style="rounded=0;fillColor=#F5F5F5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="560" y="60" width="500" height="420" as="geometry"/>
+        </mxCell>
+        <mxCell id="rp_t" value="1T NOR ROM cell (one ternary weight)" style="text;html=1;align=center;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="68" width="500" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- bitline rails -->
+        <mxCell id="r_blp" value="" style="rounded=0;fillColor=#9673A6;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="580" y="112" width="460" height="9" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_blp_lab" value="BL+ (met4)" style="text;html=1;align=left;fontSize=10;fontColor=#9673A6;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="582" y="94" width="100" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_bln" value="" style="rounded=0;fillColor=#6C8EBF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="580" y="152" width="460" height="9" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_bln_lab" value="BL- (met3)" style="text;html=1;align=left;fontSize=10;fontColor=#6C8EBF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="582" y="134" width="100" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- device plan view -->
+        <mxCell id="r_diff" value="" style="rounded=0;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="640" y="300" width="300" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_poly" value="" style="rounded=0;fillColor=#FFE6CC;strokeColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="770" y="272" width="40" height="113" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_sc" value="S" style="rounded=0;fillColor=#FFFFFF;strokeColor=#666666;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="680" y="315" width="30" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_dc" value="D" style="rounded=0;fillColor=#FFFFFF;strokeColor=#666666;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="880" y="315" width="30" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_gate_lab" value="Gate = WL_r (row select)" style="text;html=1;align=center;fontSize=10;fontColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="710" y="380" width="160" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- source to li ground -->
+        <mxCell id="r_s_wire" value="" style="rounded=0;fillColor=#666666;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="692" y="360" width="6" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_li" value="" style="rounded=0;fillColor=#A9C4EB;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="580" y="405" width="460" height="8" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_li_lab" value="Ground strap (li): source = pwell = VGND (fixed for every cell)" style="text;html=1;align=left;fontSize=10;fontColor=#4472C4;" vertex="1" parent="1">
+          <mxGeometry x="582" y="415" width="380" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- drain stub + via candidates -->
+        <mxCell id="r_d_stub" value="" style="rounded=0;fillColor=#666666;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="892" y="196" width="6" height="104" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_via_p" value="" style="rounded=0;fillColor=none;strokeColor=#CC0000;dashed=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="884" y="106" width="22" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_via_n" value="" style="rounded=0;fillColor=none;strokeColor=#CC0000;dashed=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="884" y="146" width="22" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_stub_dash" value="" style="rounded=0;fillColor=none;strokeColor=#CC0000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="893" y="112" width="4" height="84" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_via_p_lab" value="Via here: w = +1" style="text;html=1;align=left;fontSize=10;fontColor=#CC0000;" vertex="1" parent="1">
+          <mxGeometry x="912" y="124" width="120" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_via_n_lab" value="Via here: w = -1" style="text;html=1;align=left;fontSize=10;fontColor=#CC0000;" vertex="1" parent="1">
+          <mxGeometry x="912" y="164" width="120" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_via_0_lab" value="No via: w = 0&#10;(stub floats)" style="text;html=1;align=left;fontSize=10;fontColor=#CC0000;" vertex="1" parent="1">
+          <mxGeometry x="912" y="196" width="120" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- the weight callout -->
+        <mxCell id="r_call" value="The weight IS this via: exactly one option per cell, computed by the compiler from the weight file. Everything else in the cell is identical for every weight and every model."
+                style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;align=left;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="580" y="170" width="270" height="76" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="r_cap" value="Fixed cell, fixed pitch: 1.70 x 1.30 um, 2.21 um2 per weight as built. Terminal roles are frozen at cell design; the only per-model mask change is the via choice."
+                style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=11;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="580" y="432" width="460" height="44" as="geometry"/>
+        </mxCell>
+
+        <!-- ================= BOTTOM CONTRAST ================= -->
+        <mxCell id="bt" value="Logic transistor: function comes from WIRING, chosen per design by place-and-route (many mask layers differ between designs).&#10;ROM cell: function comes from ONE VIA, chosen per model by the compiler (exactly one mask layer differs between models)."
+                style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=12;align=left;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="500" width="1020" height="76" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

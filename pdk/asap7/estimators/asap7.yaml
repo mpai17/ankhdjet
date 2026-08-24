@@ -1,0 +1,39 @@
+# ASAP7 7nm predictive PDK (ASU/ARM/Cadence). Real Liberty / LEF used by
+# OpenROAD for the Tier 2 calibration (4 ORFS designs run via
+# tools/openroad/run_openroad_anchor.py). Numbers come from:
+#   - asap7sc7p5t_28 RVT TT NLDM Liberty cell areas (NAND2xp33 = 0.058 um^2)
+#   - The-OpenROAD-Project/asap7_sram_0p0 FakeRAM measurements (~0.04 um^2/bit)
+#   - Clark et al. 2016 + Vashishtha/Clark ICCAD 2017 cell-design papers
+#   - bitcell_um2 set bottom-up: a bitcell is wire-pitch-dominated, ~NAND2 +
+#     20% routing overhead. Naive (node/130)^2 = 0.0077 um^2 is wrong because
+#     ASAP7 deliberately uses 27 nm M1 / 54 nm M2 pitch (predictive, not fully
+#     scaled to TSMC N7 dimensions). 0.07 um^2 nominal; 0.05/0.10 sensitivity.
+name: asap7
+process_nm: 7
+node_scale: 344.9                 # (130/7)^2
+bitcell_um2: 0.07              # bottom-up; see comment above
+gate_equivalent_um2: 0.058        # asap7sc7p5t NAND2xp33 from Liberty
+transistors_per_gate: 4
+popcount_gates_per_row: 25
+# Measured anchor (2026-07-13): the digital-tier controller
+# (tt_um_darga_cirom, 32 columns, stored activations) synthesizes to
+# 107.85 um2 against the ORFS asap7sc7p5t RVT/TT NLDM libs vs
+# 22,207.5 um2 at sky130_fd_sc_hd through the identical yosys flow:
+# 4,441 sky130 gate-equivalents map to 1,860 asap7 NAND2xp33
+# equivalents (complex-cell mapping), so gate-count-based periphery
+# needs 107.85 / (4441.5 * 0.058) = 0.42 on this node.
+synth_calibration: 0.42
+between_layer_gates_per_channel: 1000
+serializer_gates_per_row: 15
+sram_um2_per_bit: 0.04            # FakeRAM 0p0 measured ~0.035-0.045 incl. peripherals
+array_overhead_frac: 0.15
+die_routing_overhead_frac: 0.12
+clock_mhz: 1500                   # production-tile fmax at 7nm; matches H100 SM 1.83 GHz, MI300 2.1 GHz lower bound
+vdd_v: 0.7                        # ASAP7 nominal
+clock_skew_alpha: 0.0             # bracketed knob; apply_bracket() pulls from pdk/calibrated.yaml
+wire_hop_cycles: 0
+kv_access_cycles_per_layer: 0
+# Multi-domain: matches Tensix tile / Cerebras cluster scale at this node;
+# 3-cycle async-FIFO crossings.
+clock_domain_area_mm2: 0    # 0 = derive from per-tile area
+crossing_cycles_per_hop: 3

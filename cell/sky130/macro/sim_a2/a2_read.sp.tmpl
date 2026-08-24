@@ -1,0 +1,45 @@
+* A2: extracted-macro read validation -- one w=+1 read (row 0) then one
+* w=-1 read (row 1) at FSM timing (25ns states), with the ground return
+* lumped as RGND. Corner + RGND substituted per run.
+.lib LIBPATH CORNER
+.temp TEMPC
+.param vdd=VDDV
+.include /home/mohnishp/workspace/Azara/cell/sky130/macro/build/macro_cap.spice
+.include /home/mohnishp/workspace/Azara/cell/sky130/sense_se/sense_col_schematic.spice
+
+Vdd  vpwr 0 dc {vdd}
+Rgnd vgnd_m 0 RGNDV
+Vref vref 0 dc {vdd/2}
+
+* FSM-timed controls: T0 precharge 0-25ns; T1 eval 25-50; T2 strobe 50-75;
+* T3/idle 75-125 (recovery window); second read row1: T1' 125-150, T2' 150-175.
+Vpre  pre_n  0 pwl(0 0 25n 0 25.2n {vdd} 75n {vdd} 75.2n 0 125n 0 125.2n {vdd} 175n {vdd} 175.2n 0)
+Vwl0  wl0    0 pwl(0 0 26n 0 26.2n {vdd} 75n {vdd} 75.2n 0)
+Vwl1  wl1    0 pwl(0 0 126n 0 126.2n {vdd} 175n {vdd} 175.2n 0)
+Vstr  strobe 0 pwl(0 0 50n 0 50.2n {vdd} 75n {vdd} 75.2n 0 150n 0 150.2n {vdd} 175n {vdd} 175.2n 0)
+
+Xmacro vpwr vgnd_m PRE_N_NETLIST
+Xsap blp_0 vref hit_p hitb_p strobe vpwr 0 sa_se
+Xsan bln_0 vref hit_n hitb_n strobe vpwr 0 sa_se
+
+.tran 0.05n 180n
+.control
+run
+* read 1 (w=+1 at (0,0)): BLP_0 discharges, BLN_0 floats
+meas tran blp_at_strobe  find v(blp_0) at=74n
+meas tran bln_at_strobe  find v(bln_0) at=74n
+meas tran bln_min        min  v(bln_0) from=26n to=49.9n
+meas tran bln_post_kick  min  v(bln_0) from=50n to=75n
+meas tran hitp_read1     find v(hit_p) at=74n
+meas tran hitn_read1     find v(hit_n) at=74n
+* precharge recovery after read 1
+meas tran blp80 find v(blp_0) at=80n
+meas tran blp85 find v(blp_0) at=85n
+* read 2 (w=-1 at (1,0)): BLN_0 discharges, BLP_0 floats
+meas tran bln_at_strobe2 find v(bln_0) at=174n
+meas tran blp_at_strobe2 find v(blp_0) at=174n
+meas tran hitp_read2     find v(hit_p) at=174n
+meas tran hitn_read2     find v(hit_n) at=174n
+quit
+.endc
+.end

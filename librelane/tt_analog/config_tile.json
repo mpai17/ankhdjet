@@ -1,0 +1,125 @@
+{
+    "DESIGN_NAME": "tt_um_azara_cirom",
+    "VERILOG_FILES": [
+        "dir::../../rtl/tt_analog/tt_um_azara_cirom.sv",
+        "dir::../../rtl/tt_analog/cirom_tt_ctrl.sv",
+        "dir::../../rtl/tt_analog/cirom_tt_afe_impl.sv"
+    ],
+    "CLOCK_PORT": "clk",
+    "CLOCK_PERIOD": 50.0,
+    "PDK": "sky130A",
+    "STD_CELL_LIBRARY": "sky130_fd_sc_hd",
+    "USE_POWER_PINS": true,
+    "VDD_NETS": [
+        "VDPWR"
+    ],
+    "GND_NETS": [
+        "VGND"
+    ],
+    "VERILOG_DEFINES": [
+        "ANKHDJET_SYNTH",
+        "ANKHDJET_ARRAY_MODULE=macro_array_pc_64x32_test0"
+    ],
+    "MACROS": {
+        "sa_se_band16": {
+            "gds": [
+                "dir::../../macro/sky130/abstracts/sa_se_band16.gds"
+            ],
+            "lef": [
+                "dir::../../macro/sky130/abstracts/sa_se_band16.lef"
+            ],
+            "lib": {
+                "*": [
+                    "dir::../../macro/sky130/abstracts/sa_se_band16.lib"
+                ]
+            },
+            "nl": [
+                "dir::../../macro/sky130/abstracts/sa_se_band16.bb.v"
+            ]
+        },
+        "macro_array_pc_64x32_test0": {
+            "gds": [
+                "dir::../../cell/sky130/macro/build/macro_array_pc_64x32_test0.gds"
+            ],
+            "lef": [
+                "dir::../../macro/sky130/abstracts/macro_array_pc_64x32_test0.lef"
+            ],
+            "lib": {
+                "*": [
+                    "dir::../../macro/sky130/abstracts/macro_array_pc_64x32_test0.lib"
+                ]
+            },
+            "nl": [
+                "dir::../../macro/sky130/abstracts/macro_array_pc_64x32_test0.bb.v"
+            ]
+        }
+    },
+    "FP_SIZING": "absolute",
+    "DIE_AREA": [
+        0,
+        0,
+        161.0,
+        225.76
+    ],
+    "FP_DEF_TEMPLATE": "dir::tt_analog_1x2.def",
+    "RT_MAX_LAYER": "met4",
+    "PDN_MULTILAYER": false,
+    "PDN_ENABLE_RAILS": true,
+    "PDN_CFG": "dir::pdn_cfg.tcl",
+    "FP_PDN_CORE_RING": false,
+    "FP_IO_HLENGTH": 2,
+    "FP_IO_VLENGTH": 2,
+    "MACRO_PLACEMENT_CFG": "dir::macro_tile.cfg",
+    "FP_MACRO_HORIZONTAL_HALO": 3,
+    "FP_MACRO_VERTICAL_HALO": 3,
+    "PDN_CONNECT_MACROS_TO_GRID": true,
+    "PDN_MACRO_CONNECTIONS": [
+        ".*u_macro$ VDPWR VGND VPWR VGND",
+        ".*u_band_.*$ VDPWR VGND VDD VGND"
+    ],
+    "FP_PDN_VERTICAL_LAYER": "met4",
+    "FP_PDN_HORIZONTAL_LAYER": "met3",
+    "PDN_VPITCH": 20,
+    "PDN_VOFFSET": 0,
+    "PDN_HPITCH": 10,
+    "PDN_HOFFSET": 6.35,
+    "PDN_HORIZONTAL_HALO": 0,
+    "PDN_VERTICAL_HALO": 0,
+    "RUN_HEURISTIC_DIODE_INSERTION": false,
+    "RUN_IRDROP_REPORT": false,
+    "SYNTH_HIERARCHY_MODE": "flatten",
+    "MAGIC_EXT_USE_GDS": true,
+    "FP_TAPCELL_DIST": 6,
+    "MAGIC_WRITE_FULL_LEF": false,
+    "GRT_ALLOW_CONGESTION": true,
+    "GRT_MACRO_EXTENSION": 1,
+    "LVS_IGNORE_CELLS": [
+        "sky130_fd_sc_hd__clkdlybuf4s25_1",
+        "sky130_fd_sc_hd__diode_2"
+    ],
+    "EXTRA_SPICE_MODELS": [
+        "dir::../../macro/sky130/abstracts/macro_array_pc_64x32_test0.lvs.spice"
+    ],
+    "RSZ_DONT_TOUCH_RX": "(vref|strobe|ua\\[|blp\\[|bln\\[)",
+    "PL_SOFT_OBSTRUCTIONS": [
+        "157 79 161 199.8",
+        "145 0 161 79",
+        "85.715 0 145 6",
+        "83 0 85.715 79",
+        "23.715 0 83 6",
+        "0 0 23.715 79"
+    ],
+    "ROUTING_OBSTRUCTIONS": [
+        "met1 23.715 6 83 79",
+        "met2 23.715 6 83 79",
+        "met3 23.715 6.6 83 78.4",
+        "met4 23.715 6 83 79",
+        "met1 85.715 6 145 79",
+        "met2 85.715 6 145 79",
+        "met3 85.715 6.6 145 78.4",
+        "met4 85.715 6 145 79"
+    ],
+    "IGNORE_DISCONNECTED_MODULES": [
+        "tt_um_azara_cirom"
+    ]
+}

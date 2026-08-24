@@ -1,0 +1,88 @@
+/* sa_se single-ended sense comparator Liberty (auto-generated).
+ * Inputs: BL (sensed bit-line), VREF (~VDD/2 reference), STROBE.
+ * Outputs: HIT (=BL<VREF, i.e. discharged), HITB (complement).
+ * Resolve SS @ realistic BL: validated 250/250 MC; ~2 ns regen.
+ */
+library (sa_se) {
+  technology (cmos);
+  delay_model : table_lookup;
+  time_unit                    : "1ns";
+  voltage_unit                 : "1V";
+  current_unit                 : "1mA";
+  pulling_resistance_unit      : "1kohm";
+  capacitive_load_unit (1, ff);
+  leakage_power_unit           : "1nW";
+  default_input_pin_cap        : 0.001;
+  default_inout_pin_cap        : 0.001;
+  default_output_pin_cap       : 0.000;
+  nom_voltage                  : 1.80;
+  nom_temperature              : 25.0;
+  nom_process                  : 1.0;
+  input_threshold_pct_rise     : 50;
+  input_threshold_pct_fall     : 50;
+  output_threshold_pct_rise    : 50;
+  output_threshold_pct_fall    : 50;
+  slew_lower_threshold_pct_rise: 20;
+  slew_upper_threshold_pct_rise: 80;
+  slew_lower_threshold_pct_fall: 20;
+  slew_upper_threshold_pct_fall: 80;
+  slew_derate_from_library     : 1.0;
+  voltage_map (VDD, 1.80);
+  voltage_map (VGND, 0.0);
+  lu_table_template (sa_nldm_3x3) {
+    variable_1 : input_net_transition;
+    variable_2 : total_output_net_capacitance;
+    index_1 ("0.05, 0.20, 0.50");
+    index_2 ("1.0, 10.0, 50.0");
+  }
+  cell (sa_se) {
+    is_macro_cell : true;
+    pg_pin (VDD)  { pg_type : primary_power;  voltage_name : VDD; }
+    pg_pin (VGND) { pg_type : primary_ground; voltage_name : VGND; }
+    pin (STROBE) { direction : input; clock : true; capacitance : 4.0; max_transition : 0.5; }
+    pin (BL)   { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (VREF) { direction : input; capacitance : 10.0; max_transition : 1.0; }
+    pin (HIT) {
+      direction : output;
+      capacitance : 0.0;
+      max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE";
+        timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3) {
+          values ("2.00, 2.10, 2.30", "2.10, 2.20, 2.40", "2.30, 2.40, 2.60");
+        }
+        cell_fall (sa_nldm_3x3) {
+          values ("2.00, 2.10, 2.30", "2.10, 2.20, 2.40", "2.30, 2.40, 2.60");
+        }
+        rise_transition (sa_nldm_3x3) {
+          values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30");
+        }
+        fall_transition (sa_nldm_3x3) {
+          values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30");
+        }
+      }
+    }
+    pin (HITB) {
+      direction : output;
+      capacitance : 0.0;
+      max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE";
+        timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3) {
+          values ("2.00, 2.10, 2.30", "2.10, 2.20, 2.40", "2.30, 2.40, 2.60");
+        }
+        cell_fall (sa_nldm_3x3) {
+          values ("2.00, 2.10, 2.30", "2.10, 2.20, 2.40", "2.30, 2.40, 2.60");
+        }
+        rise_transition (sa_nldm_3x3) {
+          values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30");
+        }
+        fall_transition (sa_nldm_3x3) {
+          values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30");
+        }
+      }
+    }
+  }
+}

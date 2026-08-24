@@ -1,0 +1,54 @@
+# Tiny Tapeout project information
+project:
+  title:        "Azara CiROM ternary read"
+  author:       "mpai17"
+  discord:      ""
+  description:  "Mask-programmed ternary compute-in-ROM: single-strobe parallel sense of a 64x32 1T NOR array via single-ended StrongARM amps vs an on-chip VREF"
+  language:     "Verilog"
+  clock_hz:     20000000
+
+  tiles: "1x2"
+  analog_pins:  3        # ua0=VREF (required, ~VDD/2), ua1=BLP probe, ua2=BLN probe
+  uses_vapwr:   false
+
+  top_module:  "tt_um_azara_cirom"
+
+  source_files:
+    - "project.v"
+
+pinout:
+  ui[0]: "row_addr[0]"
+  ui[1]: "row_addr[1]"
+  ui[2]: "row_addr[2]"
+  ui[3]: "row_addr[3]"
+  ui[4]: "row_addr[4]"
+  ui[5]: "row_addr[5]"
+  ui[6]: "start"
+  ui[7]: "cfg_mode"
+
+  uo[0]: "result[0]"
+  uo[1]: "result[1]"
+  uo[2]: "result[2]"
+  uo[3]: "result[3]"
+  uo[4]: "result[4]"
+  uo[5]: "result[5]"
+  uo[6]: "result[6]"
+  uo[7]: "result[7]"
+
+  uio[0]: "cfg_in (in)"
+  uio[1]: "result_byte[0] (out)"
+  uio[2]: "result_byte[1] (out)"
+  uio[3]: "result_valid (out)"
+  uio[4]: "busy (out)"
+  uio[5]: "done (out)"
+  uio[6]: ""
+  uio[7]: ""
+
+  ua[0]: "VREF input (required, ~VDD/2)"
+  ua[1]: "BLP probe"
+  ua[2]: "BLN probe"
+  ua[3]: ""
+  ua[4]: ""
+  ua[5]: ""
+
+yaml_version: 6

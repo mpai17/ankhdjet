@@ -1,0 +1,380 @@
+/* sa_band16 sense-amp band Liberty (auto-generated). 54.4 x 73.5 um. */
+library (sa_band16) {
+  technology (cmos);
+  delay_model : table_lookup;
+  time_unit : "1ns"; voltage_unit : "1V"; current_unit : "1mA";
+  pulling_resistance_unit : "1kohm"; capacitive_load_unit (1, ff);
+  leakage_power_unit : "1nW";
+  default_input_pin_cap : 0.001; default_output_pin_cap : 0.000;
+  nom_voltage : 1.80; nom_temperature : 25.0; nom_process : 1.0;
+  input_threshold_pct_rise : 50; input_threshold_pct_fall : 50;
+  output_threshold_pct_rise : 50; output_threshold_pct_fall : 50;
+  slew_lower_threshold_pct_rise : 20; slew_upper_threshold_pct_rise : 80;
+  slew_lower_threshold_pct_fall : 20; slew_upper_threshold_pct_fall : 80;
+  slew_derate_from_library : 1.0;
+  voltage_map (VDD, 1.80); voltage_map (VGND, 0.0);
+  lu_table_template (sa_nldm_3x3) {
+    variable_1 : input_net_transition;
+    variable_2 : total_output_net_capacitance;
+    index_1 ("0.05, 0.20, 0.50"); index_2 ("1.0, 10.0, 50.0");
+  }
+  cell (sa_band16) {
+    is_macro_cell : true;
+    area : 3998.4;
+    pg_pin (VDD)  { pg_type : primary_power;  voltage_name : VDD; }
+    pg_pin (VGND) { pg_type : primary_ground; voltage_name : VGND; }
+    pin (STROBE) { direction : input; clock : true; capacitance : 64.0; max_transition : 0.5; }
+    pin (BLP_0) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (BLN_0) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (OUTP_0) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (OUTM_0) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (BLP_1) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (BLN_1) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (OUTP_1) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (OUTM_1) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (BLP_2) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (BLN_2) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (OUTP_2) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (OUTM_2) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (BLP_3) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (BLN_3) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (OUTP_3) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (OUTM_3) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (BLP_4) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (BLN_4) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (OUTP_4) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (OUTM_4) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (BLP_5) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (BLN_5) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (OUTP_5) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (OUTM_5) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (BLP_6) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (BLN_6) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (OUTP_6) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (OUTM_6) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (BLP_7) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (BLN_7) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (OUTP_7) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (OUTM_7) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (BLP_8) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (BLN_8) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (OUTP_8) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (OUTM_8) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (BLP_9) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (BLN_9) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (OUTP_9) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (OUTM_9) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (BLP_10) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (BLN_10) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (OUTP_10) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (OUTM_10) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (BLP_11) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (BLN_11) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (OUTP_11) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (OUTM_11) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (BLP_12) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (BLN_12) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (OUTP_12) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (OUTM_12) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (BLP_13) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (BLN_13) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (OUTP_13) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (OUTM_13) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (BLP_14) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (BLN_14) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (OUTP_14) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (OUTM_14) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (BLP_15) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (BLN_15) { direction : input; capacitance : 30.0; max_transition : 1.0; }
+    pin (OUTP_15) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+    pin (OUTM_15) {
+      direction : output; capacitance : 0.0; max_capacitance : 50.0;
+      timing () {
+        related_pin : "STROBE"; timing_type : rising_edge;
+        cell_rise (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        cell_fall (sa_nldm_3x3)  { values ("2.20, 2.30, 2.50", "2.30, 2.40, 2.60", "2.50, 2.60, 2.80"); }
+        rise_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+        fall_transition (sa_nldm_3x3) { values ("0.10, 0.15, 0.30", "0.10, 0.15, 0.30", "0.10, 0.15, 0.30"); }
+      }
+    }
+  }
+}

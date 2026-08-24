@@ -1,0 +1,38 @@
+* Single-ended CiROM sense column — the corrected sense primitive.
+*
+* Replaces the differential StrongARM (sign(BLP-BLN), which cannot
+* represent weight=0) with TWO single-ended clocked comparators, each
+* comparing one bit-line against a reference VREF (~VDD/2 "did this BL
+* discharge?"). Per-cell read states decode cleanly:
+*   w=+1: BL+ low (<VREF), BL- high  -> (pos,neg) = (1,0)
+*   w=-1: BL+ high,        BL- low   -> (0,1)
+*   w= 0: BL+ high,        BL- high  -> (0,0)   <-- the fix
+*
+* Each comparator is the validated StrongARM core (excellent offset
+* margin) with one input tied to VREF instead of the complementary BL.
+* HIT is taken from the VREF-side latch node: when BL < VREF the BL-side
+* device conducts less, so the VREF side wins and its node rises -> HIT=1.
+*
+* sa_se: single-ended comparator. Ports: BL VREF HIT HITB STROBE VDD VGND
+.subckt sa_se BL VREF HIT HITB STROBE VDD VGND
+Xtail  tail strobe vgnd vgnd sky130_fd_pr__nfet_01v8 w=14.0 l=1.0
+* Input pair: BL on one side, VREF on the other (same W/L as validated SA)
+Xin_bl   int_bl  BL   tail vgnd sky130_fd_pr__nfet_01v8 w=8.0 l=2.0
+Xin_ref  int_ref VREF tail vgnd sky130_fd_pr__nfet_01v8 w=8.0 l=2.0
+* Cross-coupled NMOS. Source nodes set the polarity: HIT rises when the
+* BL side wins (BL < VREF, i.e. BL discharged) -> HIT = "discharge detected".
+Xncx_h  HIT  HITB int_bl  vgnd sky130_fd_pr__nfet_01v8 w=4.0 l=1.0
+Xncx_hb HITB HIT  int_ref vgnd sky130_fd_pr__nfet_01v8 w=4.0 l=1.0
+Xpcx_h  HIT  HITB vdd vdd sky130_fd_pr__pfet_01v8 w=8.0 l=1.0
+Xpcx_hb HITB HIT  vdd vdd sky130_fd_pr__pfet_01v8 w=8.0 l=1.0
+* Reset PMOS: precharge HIT/HITB high while STROBE low
+Xrst_h  HIT  strobe vdd vdd sky130_fd_pr__pfet_01v8 w=0.84 l=1.0
+Xrst_hb HITB strobe vdd vdd sky130_fd_pr__pfet_01v8 w=0.84 l=1.0
+.ends sa_se
+
+* sense_col: two single-ended comparators per column sharing VREF/STROBE.
+*   POS senses BL+, NEG senses BL-.
+.subckt sense_col BLP BLN VREF POS_HIT NEG_HIT STROBE VDD VGND
+Xpos BLP VREF POS_HIT POS_HITB STROBE VDD VGND sa_se
+Xneg BLN VREF NEG_HIT NEG_HITB STROBE VDD VGND sa_se
+.ends sense_col

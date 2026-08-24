@@ -1,0 +1,5 @@
+build_array_*/
+*.log
+*.raw
+abc.history
+__pycache__/

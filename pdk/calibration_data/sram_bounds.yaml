@@ -1,0 +1,164 @@
+# SRAM read access latency bounds (ns) per (process_nm, bank_kb).
+# low_ns: small/fast-corner/single-port read
+# high_ns: large-array slow-corner/hierarchical worst case
+#
+# Data quality flags:
+#   measured  - from public OpenRAM/foundry IP datasheet for that exact size
+#   academic  - extracted from a published ISSCC/IEDM macro at related size
+#   cacti     - CACTI 7 / FinCACTI scaling, interpolated across bank size
+#
+# Methodology: anchor each node to a measured datapoint, then scale bank size
+# with CACTI's ~sqrt(KB) word/bitline RC growth. Advanced-node high_ns includes
+# hierarchical sense-amp + pipeline stage as one wavefront (not a full pipeline).
+
+# ---------------- 180 nm (GF180MCU, 5V SRAM IP) ----------------
+- process_nm: 180
+  bank_kb: 0.5
+  low_ns: 4.6
+  high_ns: 6.1
+  source: "measured: GF180 sram512x8m8wm1 Tah=4.86ns TT/5V, Tcyc=6.08ns; https://gf180mcu-pdk.readthedocs.io/en/latest/IPs/SRAM/gf180mcu_fd_ip_sram/cells/gf180mcu_fd_ip_sram__sram512x8m8wm1/gf180mcu_fd_ip_sram__sram512x8m8wm1.html"
+- process_nm: 180
+  bank_kb: 4
+  low_ns: 8.0
+  high_ns: 14.0
+  source: "cacti: GF180 0.5KB measured x sqrt(8) bitline scale; https://gf180mcu-pdk.readthedocs.io/en/latest/IPs/SRAM/sram.html"
+- process_nm: 180
+  bank_kb: 64
+  low_ns: 18.0
+  high_ns: 35.0
+  source: "cacti: extrapolated, no GF180 IP exists above 0.5KB; flagged"
+- process_nm: 180
+  bank_kb: 256
+  low_ns: 30.0
+  high_ns: 65.0
+  source: "cacti: extrapolated; bank would be split into sub-arrays; flagged"
+
+# ---------------- 130 nm (SKY130, OpenRAM 1.8V) ----------------
+- process_nm: 130
+  bank_kb: 4
+  low_ns: 2.0
+  high_ns: 3.5
+  source: "measured: ShonTaware OpenRAM 1024x32 SKY130 1.8V <2.5ns target; https://github.com/ShonTaware/SRAM_SKY130"
+- process_nm: 130
+  bank_kb: 16
+  low_ns: 3.0
+  high_ns: 5.5
+  source: "cacti: SKY130 4KB measured x sqrt(4) bitline scale"
+- process_nm: 130
+  bank_kb: 64
+  low_ns: 4.5
+  high_ns: 9.0
+  source: "cacti: scaled from OpenRAM 4KB SKY130; https://github.com/HewlettPackard/cacti"
+- process_nm: 130
+  bank_kb: 256
+  low_ns: 7.0
+  high_ns: 16.0
+  source: "cacti: scaled from OpenRAM 4KB; large bank requires hierarchy; flagged"
+- process_nm: 130
+  bank_kb: 1024
+  low_ns: 12.0
+  high_ns: 28.0
+  source: "cacti: extrapolated; banks at 1MB usually split; flagged"
+
+# ---------------- 65 nm (TSMC LP/GP SRAM compiler era) ----------------
+- process_nm: 65
+  bank_kb: 64
+  low_ns: 1.2
+  high_ns: 2.5
+  source: "academic: typical 65nm SRAM compiler datapoint (e.g., 75kb in-memory compute macro); https://arxiv.org/pdf/2003.10300"
+- process_nm: 65
+  bank_kb: 256
+  low_ns: 1.8
+  high_ns: 3.8
+  source: "cacti: scaled from 65nm anchor"
+- process_nm: 65
+  bank_kb: 1024
+  low_ns: 2.8
+  high_ns: 6.0
+  source: "cacti: 1MB needs sub-banking at 65nm"
+- process_nm: 65
+  bank_kb: 4096
+  low_ns: 5.0
+  high_ns: 11.0
+  source: "cacti: extrapolated, no published single-macro 4MB at 65nm; flagged"
+
+# ---------------- 28 nm (TSMC 28HPC compiler, dense mobile/AI) ----------------
+- process_nm: 28
+  bank_kb: 64
+  low_ns: 0.7
+  high_ns: 1.6
+  source: "academic: 28nm 1Mb compute-in-memory 6T-SRAM 6.6ns latency for full MAC, ~1ns raw read; https://ieeexplore.ieee.org/document/9731681/"
+- process_nm: 28
+  bank_kb: 256
+  low_ns: 1.0
+  high_ns: 2.2
+  source: "academic: 28nm STT-MRAM ref 2.8ns sets SRAM upper-bound; https://blaauw.engin.umich.edu/wp-content/uploads/sites/342/2018/05/Qing-A-1Mb-28nm-STT-MRAM-with-2.8ns-Read-Access-Time-at-1.2V-VDD-Using-Single-Cap-Offset-Cancelled-Sense-Amplifier-and-In-situ-Self-Write-Termination.pdf"
+- process_nm: 28
+  bank_kb: 1024
+  low_ns: 1.5
+  high_ns: 3.5
+  source: "cacti: TSMC 28HPC SP-SRAM compiler typical; databook https://studylib.net/doc/27539524/db-tsn28hpcpdpsram-20120200-130a"
+- process_nm: 28
+  bank_kb: 4096
+  low_ns: 2.5
+  high_ns: 6.0
+  source: "cacti: 28nm 4MB requires hierarchical bank; flagged"
+- process_nm: 28
+  bank_kb: 16384
+  low_ns: 4.5
+  high_ns: 10.0
+  source: "cacti: extrapolated; in practice would be many sub-banks; flagged"
+
+# ---------------- 7 nm (TSMC N7, FinFET HD) ----------------
+- process_nm: 7
+  bank_kb: 64
+  low_ns: 0.4
+  high_ns: 0.9
+  source: "academic: TSMC 7nm 256Mb test-chip ISSCC 2017 (Chang) sub-1ns subarray; https://www.semanticscholar.org/paper/12.1-A-7nm-256Mb-SRAM-in-high-k-metal-gate-FinFET-Chang-Chen/6e11fccb5e165fcb246a4ec8875fc7f511f2445a"
+- process_nm: 7
+  bank_kb: 256
+  low_ns: 0.55
+  high_ns: 1.3
+  source: "cacti: FinCACTI 7nm scaling; https://mpedram.com/Papers/FinCACTI-isvlsi14.pdf"
+- process_nm: 7
+  bank_kb: 1024
+  low_ns: 0.8
+  high_ns: 2.0
+  source: "cacti: FinCACTI 4MB cache 7nm reference; flagged"
+- process_nm: 7
+  bank_kb: 4096
+  low_ns: 1.3
+  high_ns: 3.2
+  source: "cacti: hierarchical sub-banking required; flagged"
+- process_nm: 7
+  bank_kb: 16384
+  low_ns: 2.2
+  high_ns: 5.5
+  source: "cacti: extrapolated; real designs split into many macros; flagged"
+
+# ---------------- 6 nm (TSMC N6, ~same SRAM cell as N7) ----------------
+- process_nm: 6
+  bank_kb: 64
+  low_ns: 0.4
+  high_ns: 0.85
+  source: "cacti: N6 reuses N7 SRAM cell per TSMC; https://www.anandtech.com/show/14228/tsmc-reveals-6-nm-process-technology-7-nm-with-higher-transistor-density"
+- process_nm: 6
+  bank_kb: 256
+  low_ns: 0.55
+  high_ns: 1.25
+  source: "cacti: scaled from N7 anchor (-5% per density bump); flagged"
+- process_nm: 6
+  bank_kb: 1024
+  low_ns: 0.8
+  high_ns: 1.9
+  source: "cacti: extrapolated from FinCACTI 7nm; flagged"
+- process_nm: 6
+  bank_kb: 4096
+  low_ns: 1.3
+  high_ns: 3.0
+  source: "cacti: extrapolated; flagged"
+- process_nm: 6
+  bank_kb: 16384
+  low_ns: 2.1
+  high_ns: 5.2
+  source: "cacti: extrapolated; flagged"

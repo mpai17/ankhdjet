@@ -1,0 +1,83 @@
+{
+    "DESIGN_NAME": "cirom_chip_digital",
+    "VERILOG_FILES": [
+        "dir::../../rtl/chip/cirom_chip_digital.sv"
+    ],
+    "CLOCK_PORT": "clk",
+    "CLOCK_PERIOD": 25.0,
+    "PDK": "sky130A",
+    "STD_CELL_LIBRARY": "sky130_fd_sc_hd",
+    "USE_POWER_PINS": true,
+    "VERILOG_DEFINES": [
+        "ANKHDJET_SYNTH",
+        "ANKHDJET_ARRAY_MODULE=macro_array_pc_64x32_test0"
+    ],
+    "MACROS": {
+        "macro_array_pc_64x32_test0": {
+            "gds": [
+                "dir::../../cell/sky130/macro/build/macro_array_pc_64x32_test0.gds"
+            ],
+            "lef": [
+                "dir::../../macro/sky130/abstracts/macro_array_pc_64x32_test0.lef"
+            ],
+            "lib": {
+                "*": [
+                    "dir::../../macro/sky130/abstracts/macro_array_pc_64x32_test0.lib"
+                ]
+            },
+            "nl": [
+                "dir::../../macro/sky130/abstracts/macro_array_pc_64x32_test0.bb.v"
+            ]
+        }
+    },
+    "FP_SIZING": "absolute",
+    "DIE_AREA": [
+        0,
+        0,
+        850,
+        300
+    ],
+    "FP_CORE_MARGIN": 8,
+    "MACRO_PLACEMENT_CFG": "dir::macro_digital.cfg",
+    "IO_PIN_ORDER_CFG": "dir::pin_order.cfg",
+    "DESIGN_IS_CORE": true,
+    "RUN_LINTER": true,
+    "RUN_HEURISTIC_DIODE_INSERTION": false,
+    "SYNTH_AUTONAME": true,
+    "PDN_CONNECT_MACROS_TO_GRID": true,
+    "PDN_MACRO_CONNECTIONS": [
+        "^u_macro$ VPWR VGND VPWR VGND"
+    ],
+    "PDN_VPITCH": 20,
+    "PDN_VOFFSET": 5,
+    "PDN_HPITCH": 40,
+    "PDN_HOFFSET": 20,
+    "PDN_HORIZONTAL_HALO": 1,
+    "PDN_VERTICAL_HALO": 1,
+    "RUN_IRDROP_REPORT": false,
+    "MAGIC_EXT_USE_GDS": true,
+    "MAGIC_EXT_ABSTRACT_CELLS": [
+        "^sa_se_band16$"
+    ],
+    "MAGIC_WRITE_FULL_LEF": false,
+    "SYNTH_HIERARCHY_MODE": "keep",
+    "GRT_MACRO_EXTENSION": 1,
+    "FP_TAPCELL_DIST": 9,
+    "FP_MACRO_HORIZONTAL_HALO": 3,
+    "FP_MACRO_VERTICAL_HALO": 3,
+    "LVS_IGNORE_CELLS": [
+        "sky130_fd_sc_hd__clkdlybuf4s25_1",
+        "sky130_fd_sc_hd__diode_2"
+    ],
+    "GRT_ALLOW_CONGESTION": true,
+    "EXTRA_SPICE_MODELS": [
+        "dir::../../macro/sky130/abstracts/macro_array_pc_64x32_test0.lvs.spice"
+    ],
+    "FALLBACK_SDC_FILE": "dir::cirom_chip_digital.sdc",
+    "RSZ_DONT_TOUCH_RX": "(blp\\[|bln\\[)",
+    "DESIGN_REPAIR_MAX_SLEW_PCT": 40,
+    "GRT_DESIGN_REPAIR_MAX_SLEW_PCT": 60,
+    "GRT_DESIGN_REPAIR_MAX_CAP_PCT": 60,
+    "DESIGN_REPAIR_MAX_CAP_PCT": 40,
+    "RUN_POST_GRT_DESIGN_REPAIR": true
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "platform": "asap7",
+    "design": "gcd",
+    "target_period_ns": 0.31,
+    "worst_slack_setup_ns": -0.19515900085131554,
+    "worst_slack_hold_ns": 0.022591144323355926,
+    "achieved_period_ns": 0.5051590008513156,
+    "achieved_fmax_mhz": 1979.5747444166236,
+    "die_width_mm": 0.008976999999999999,
+    "die_height_mm": 0.008976999999999999,
+    "die_area_mm2": 8.058652899999998e-05
+  },
+  {
+    "platform": "asap7",
+    "design": "aes",
+    "target_period_ns": 0.38,
+    "worst_slack_setup_ns": -0.05558020732547706,
+    "worst_slack_hold_ns": 0.004364252032770661,
+    "achieved_period_ns": 0.4355802073254771,
+    "achieved_fmax_mhz": 2295.7884292772133,
+    "die_width_mm": 0.051040999999999996,
+    "die_height_mm": 0.051040999999999996,
+    "die_area_mm2": 0.0026051836809999995
+  },
+  {
+    "platform": "asap7",
+    "design": "ethmac",
+    "target_period_ns": 1.0,
+    "worst_slack_setup_ns": -0.18286144893646272,
+    "worst_slack_hold_ns": 0.008018932772092462,
+    "achieved_period_ns": 1.1828614489364626,
+    "achieved_fmax_mhz": 845.4075503932625,
+    "die_width_mm": 0.106815,
+    "die_height_mm": 0.106815,
+    "die_area_mm2": 0.011409444224999999
+  },
+  {
+    "platform": "asap7",
+    "design": "ibex",
+    "target_period_ns": 1.0,
+    "worst_slack_setup_ns": -0.2036629761870171,
+    "worst_slack_hold_ns": 0.037104736098684955,
+    "achieved_period_ns": 1.203662976187017,
+    "achieved_fmax_mhz": 830.7973409365935,
+    "die_width_mm": 0.076683,
+    "die_height_mm": 0.076683,
+    "die_area_mm2": 0.005880282489
+  }
+]
