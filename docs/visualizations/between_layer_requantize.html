@@ -1,0 +1,336 @@
+<title>Between-Layer Requantize</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+
+<style>
+  :root{
+    --bg:#080d19; --panel:#0f1729; --panel-2:#0b1120; --edge:#1e2b45;
+    --grid:#1a2740; --ink:#e4ebf7; --muted:#8496b4; --faint:#59688a;
+    --pos:#f3b13a; --neg:#4aa8ff; --zero:#38455f; --live:#fff4d8;
+    --clip:#ff6b6b; --result:#eef4ff;
+    --pos-glow:rgba(243,177,58,.5); --neg-glow:rgba(74,168,255,.5);
+    --shadow:0 22px 60px -28px rgba(0,0,0,.8);
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+    --sans:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(1200px 600px at 12% -10%,#12203a 0,transparent 55%),
+      radial-gradient(900px 500px at 100% 0,#16122e 0,transparent 50%);background-attachment:fixed}
+  .wrap{max-width:1000px;margin:0 auto;padding:40px 22px 72px}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--pos);margin:0 0 10px}
+  h1{font-size:clamp(27px,5vw,42px);line-height:1.05;margin:0 0 12px;font-weight:700;letter-spacing:-.02em;text-wrap:balance}
+  h1 .sub{color:var(--faint);font-weight:500}
+  .lede{max-width:64ch;color:var(--muted);font-size:16.5px;margin:0}
+  .lede b{color:var(--ink);font-weight:600}
+  .m{font-family:var(--mono);color:var(--ink)}
+
+  .stage{margin:26px 0 0;background:linear-gradient(180deg,var(--panel),var(--panel-2));
+    border:1px solid var(--edge);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+  .stage-top{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 16px;
+    border-bottom:1px solid var(--edge);background:rgba(255,255,255,.015)}
+  .stage-title{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .stage-title b{color:var(--ink)}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .dot.r{background:var(--clip)} .dot.z{background:var(--neg)} .dot.k{background:var(--pos)}
+
+  .svg-scroll{overflow-x:auto;padding:8px 6px 0}
+  svg{display:block;max-width:100%;height:auto;margin:0 auto;min-width:640px}
+
+  .tile-box{fill:url(#tileg);stroke:var(--edge);stroke-width:1.5}
+  .tile-lab{font-family:var(--mono);font-weight:600;font-size:14px;fill:var(--ink);text-anchor:middle}
+  .tile-sub{font-family:var(--mono);font-size:11px;fill:var(--faint);text-anchor:middle}
+  .port{fill:var(--panel);stroke:var(--grid);stroke-width:1.5}
+  .chip{fill:#0b1220;stroke:var(--grid);stroke-width:1.3}
+  .chip-val{font-family:var(--mono);font-size:14px;font-weight:600;text-anchor:middle;
+    fill:var(--muted);font-variant-numeric:tabular-nums}
+  .chip-lab{font-family:var(--mono);font-size:10.5px;text-anchor:middle;fill:var(--faint)}
+  .wire{stroke:var(--grid);stroke-width:2;fill:none}
+  .stagebox{fill:#0b1220;stroke:var(--grid);stroke-width:1.4}
+  .stage-op{font-family:var(--mono);font-weight:600;font-size:15px;text-anchor:middle;fill:var(--ink)}
+  .stage-cap{font-family:var(--mono);font-size:11px;text-anchor:middle;fill:var(--faint)}
+  .stage-val{font-family:var(--mono);font-size:14px;font-weight:600;text-anchor:middle;
+    fill:var(--faint);font-variant-numeric:tabular-nums}
+  .arrow{stroke:var(--faint);stroke-width:2;fill:none}
+  .bracket{stroke:var(--faint);stroke-width:1.3;fill:none;stroke-dasharray:4 4}
+  .bracket-lab{font-family:var(--mono);font-size:11.5px;fill:var(--faint);text-anchor:middle;letter-spacing:.04em}
+
+  @media (prefers-reduced-motion:no-preference){
+    .chip,.chip-val,.wire,.stagebox,.stage-val,.port{transition:all .3s cubic-bezier(.4,.1,.2,1)}
+  }
+  .chip.active{stroke:var(--live)} .chip.active .cv{fill:var(--ink)}
+  .chip-val.active{fill:var(--ink)}
+  .chip.filled .cv{fill:var(--result)}
+  .wire.hot{stroke:var(--pos);filter:drop-shadow(0 0 5px var(--pos-glow))}
+  .stagebox.hot{stroke:var(--live)}
+  .stage-val.on{fill:var(--ink)}
+  .stage-val.relu{fill:var(--neg)}
+  .stage-val.clip{fill:var(--clip)}
+  .port.hot{fill:var(--live);stroke:var(--live)}
+
+  .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px;
+    border-top:1px solid var(--edge);background:rgba(255,255,255,.015)}
+  button{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--ink);background:#16203a;
+    border:1px solid var(--edge);border-radius:9px;padding:9px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+  button:hover{border-color:var(--faint);background:#1a2744}
+  button.primary{background:var(--pos);color:#1a1204;border-color:var(--pos);font-weight:600}
+  button.primary:hover{filter:brightness(1.08)}
+  button:focus-visible{outline:2px solid var(--live);outline-offset:2px}
+  .spacer{flex:1 1 20px}
+  .speed{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+  input[type=range]{accent-color:var(--pos);width:110px}
+  .prog{font-family:var(--mono);font-size:12.5px;color:var(--muted);white-space:nowrap}
+  .prog b{color:var(--ink)}
+  .readout{display:grid;grid-template-columns:auto 1fr;border-top:1px solid var(--edge);font-family:var(--mono);font-size:14px}
+  .readout .tag{padding:14px 16px;color:var(--faint);border-right:1px solid var(--edge);background:var(--panel-2);
+    letter-spacing:.08em;font-size:12px;text-transform:uppercase;display:flex;align-items:center}
+  .readout .msg{padding:14px 16px;color:var(--ink);display:flex;align-items:center;min-height:52px}
+  .readout .msg .pos{color:var(--pos)} .readout .msg .neg{color:var(--neg)} .readout .msg .clip{color:var(--clip)} .readout .msg .dim{color:var(--faint)}
+
+  .formula{margin-top:22px;font-family:var(--mono);font-size:15px;color:var(--muted);background:var(--panel-2);
+    border:1px solid var(--edge);border-radius:10px;padding:15px 18px;overflow-x:auto;white-space:nowrap}
+  .formula b{color:var(--ink)} .formula .neg{color:var(--neg)} .formula .clip{color:var(--clip)}
+  .notes{margin-top:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+  .note{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:16px 18px}
+  .note h3{margin:0 0 7px;font-size:13px;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--pos)}
+  .note.n2 h3{color:var(--neg)} .note.n3 h3{color:var(--clip)}
+  .note p{margin:0;font-size:14px;color:var(--muted)} .note p b{color:var(--ink);font-weight:600}
+  .fidelity{margin-top:20px;background:var(--panel-2);border:1px solid var(--edge);
+    border-left:3px solid var(--faint);border-radius:10px;padding:16px 20px}
+  .fidelity h3{margin:0 0 8px;font-size:12.5px;font-family:var(--mono);letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted)}
+  .fidelity p{margin:0;font-size:14px;color:var(--muted);max-width:84ch}
+  .fidelity p b{color:var(--ink);font-weight:600} .fidelity p .neg{color:var(--neg)}
+  footer{margin-top:32px;color:var(--faint);font-size:12.5px;font-family:var(--mono)}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="kicker">between_layer · combinational requantize</p>
+    <h1>Between-Layer Requantize <span class="sub">/ no buffer</span></h1>
+    <p class="lede">Layer 1 hands its raw integer accumulators straight to Layer 2 as low-bit activations, through one <b>stateless combinational</b> step per channel: multiply by the tensor scale, arithmetic-shift, ReLU, saturate. <b>No clock, no register, no SRAM</b> sits between the two tiles.</p>
+  </header>
+
+  <section class="stage" aria-label="Between-layer requantize dataflow">
+    <div class="stage-top">
+      <div class="stage-title">acc &#8594; requantize &#8594; act &nbsp;·&nbsp; <b id="stepTag">idle</b></div>
+      <div class="legend" aria-hidden="true">
+        <span><i class="dot z"></i> ReLU clamps &lt;0</span>
+        <span><i class="dot r"></i> clip saturates</span>
+        <span><i class="dot k"></i> passes through</span>
+      </div>
+    </div>
+
+    <div class="svg-scroll">
+      <svg id="scene" viewBox="0 0 1010 430" role="img"
+        aria-label="Layer 1's four raw accumulators pass one at a time through a combinational requantize pipeline: multiply by scale, arithmetic shift, ReLU, clip, and arrive as Layer 2's input activations, with no register or SRAM between the two tiles.">
+        <defs>
+          <linearGradient id="tileg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#131d33"/><stop offset="1" stop-color="#0c1424"/>
+          </linearGradient>
+          <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="var(--faint)"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="controls">
+      <button id="play" class="primary">▶ Play</button>
+      <button id="back">◂ Back</button>
+      <button id="step">Step ▸</button>
+      <button id="reset">↺ Reset</button>
+      <div class="spacer"></div>
+      <label class="speed">speed <input id="speed" type="range" min="1" max="5" value="3"></label>
+      <div class="prog">channel <b id="progNow">0</b> / 4</div>
+    </div>
+
+    <div class="readout">
+      <div class="tag">flow</div>
+      <div class="msg m"><span id="status">Press <b>Play</b> to push each channel through requantize into Layer 2.</span></div>
+    </div>
+  </section>
+
+  <p class="formula">
+    <b>act[c]</b> = clip( ReLU( ( acc[c] &#215; s<sub>q</sub> ) &gt;&gt; Q ) , 0 , 2<sup>K</sup>&minus;1 )
+    &nbsp;&nbsp;<span style="color:var(--faint)">// s<sub>q</sub>=128 (scale 0.5, Q8.8), Q=8, K=8 &#8594; range 0..255</span>
+  </p>
+
+  <div class="notes">
+    <div class="note">
+      <h3>Rescale in fixed point</h3>
+      <p>The wide signed accumulator is multiplied by the per-tensor scale <span class="m">s<sub>q</sub></span> and <b>arithmetic-shifted right</b> by Q, folding dequant and requant into one integer op.</p>
+    </div>
+    <div class="note n2">
+      <h3>ReLU clamps negatives</h3>
+      <p>Anything below zero becomes <b>0</b>, which is the layer's nonlinearity, applied right here in the same combinational path.</p>
+    </div>
+    <div class="note n3">
+      <h3>Saturating clip</h3>
+      <p>The result is clipped to the K-bit unsigned range <span class="m">0..255</span>, so large accumulators <b>saturate</b> into the next layer's activation width.</p>
+    </div>
+  </div>
+
+  <div class="fidelity">
+      <h3>How this differs from a full BitNet forward pass</h3>
+      <p>The <b>scale-and-shift</b> and the <b>saturating clip</b> are faithful: BitNet's W1.58A8 inference dequantizes each accumulator by the weight-and-activation scale and re-quantizes activations to a fixed integer range with saturation. Two things here are simplified. The <b>ReLU stands in for the layer's real nonlinearity</b> (BitNet's FFN uses squared-ReLU or a gated variant, and an RMSNorm precedes the quantized linear, neither shown here). And the <b>scale is a static per-tensor constant</b> in this example, whereas real BitNet recomputes a <b>per-token activation scale</b> dynamically. So the mechanism is exact; the specific activation and the dynamic scale are where it diverges from a real forward pass.</p>
+  </div>
+
+  <footer>
+    Mechanism of <span class="m">between_layer.sv</span> (M parallel <span class="m">requantize.sv</span> units, all combinational). Channels are stepped one at a time for clarity; in silicon they resolve at once. Values shown are a worked example.
+  </footer>
+</div>
+
+<script>
+(() => {
+  // ---- worked example -----------------------------------------------
+  const ACC = [300, -300, 96, 800];
+  const SQ = 128, Q = 8, K = 8, MAXV = (1<<K)-1;   // scale 0.5, Q8.8, 8-bit
+  const NC = ACC.length;
+  const stages = ACC.map(a=>{
+    const p1 = a*SQ, p2 = p1>>Q, p3 = Math.max(0,p2), p4 = Math.min(MAXV,p3);
+    return {a, p1, p2, p3, p4, relu:(p3!==p2), clip:(p4!==p3)};
+  });
+
+  // ---- geometry -----------------------------------------------------
+  const rowY = [96, 176, 256, 336];
+  const L1 = {x:24, y:70, w:122, h:296};
+  const L2 = {x:854, y:70, w:122, h:296};
+  const chipW = 74, chipH = 40;
+  const stageCx = [318, 438, 558, 678];
+  const stageY = 210, sW = 92, sH = 66;
+  const SVG = document.getElementById('scene');
+  const NS='http://www.w3.org/2000/svg';
+  const el=(n,a={})=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  const add=(n,a,txt)=>{const e=el(n,a);if(txt!=null)e.textContent=txt;SVG.appendChild(e);return e;};
+
+  // tiles
+  function tile(t,label){
+    add('rect',{x:t.x,y:t.y,width:t.w,height:t.h,rx:12,class:'tile-box'});
+    add('text',{x:t.x+t.w/2,y:t.y+26,class:'tile-lab'},label);
+    add('text',{x:t.x+t.w/2,y:t.y+44,class:'tile-sub'},'cirom_nor_tile');
+  }
+  tile(L1,'LAYER 1'); tile(L2,'LAYER 2');
+  add('text',{x:L1.x+L1.w/2,y:L1.y+L1.h-14,class:'tile-sub'},'raw MAC out');
+  add('text',{x:L2.x+L2.w/2,y:L2.y+L2.h-14,class:'tile-sub'},'next input');
+
+  // acc chips (layer 1 out) + act chips (layer 2 in)
+  const accChip={}, accVal={}, actChip={}, actVal={}, l1port={}, l2port={};
+  for(let c=0;c<NC;c++){
+    // L1 output port + acc chip
+    l1port[c]=add('circle',{cx:L1.x+L1.w,cy:rowY[c],r:5,class:'port'});
+    accChip[c]=add('rect',{x:L1.x+L1.w+14,y:rowY[c]-chipH/2,width:chipW,height:chipH,rx:7,class:'chip'});
+    accVal[c]=add('text',{x:L1.x+L1.w+14+chipW/2,y:rowY[c]+5,class:'chip-val cv'},ACC[c]);
+    add('text',{x:L1.x+L1.w+14+chipW/2,y:rowY[c]-chipH/2-6,class:'chip-lab'},'acc['+c+']');
+    // L2 input port + act chip
+    l2port[c]=add('circle',{cx:L2.x,cy:rowY[c],r:5,class:'port'});
+    actChip[c]=add('rect',{x:L2.x-14-chipW,y:rowY[c]-chipH/2,width:chipW,height:chipH,rx:7,class:'chip'});
+    actVal[c]=add('text',{x:L2.x-14-chipW/2,y:rowY[c]+5,class:'chip-val cv'},'–');
+    add('text',{x:L2.x-14-chipW/2,y:rowY[c]-chipH/2-6,class:'chip-lab'},'act['+c+']');
+  }
+
+  // requantize pipeline (single representative lane, centered)
+  const ops=[['&#215; s',SQ],['&gt;&gt; Q',Q],['ReLU',''],['clip',''+MAXV]];
+  const opTxt=['× s','>> Q','ReLU','clip'];
+  const stageBox={}, stageVal={};
+  for(let i=0;i<4;i++){
+    const cx=stageCx[i];
+    stageBox[i]=add('rect',{x:cx-sW/2,y:stageY-sH/2,width:sW,height:sH,rx:9,class:'stagebox'});
+    add('text',{x:cx,y:stageY-4,class:'stage-op'},opTxt[i]);
+    const cap = i===0?('s='+SQ):i===1?('Q='+Q):i===3?('0..'+MAXV):'max(0,·)';
+    add('text',{x:cx,y:stageY+15,class:'stage-cap'},cap);
+    // value readout above each stage
+    stageVal[i]=add('text',{x:cx,y:stageY-sH/2-10,class:'stage-val'},'');
+    // arrow to next stage
+    if(i<3) add('line',{x1:cx+sW/2+2,y1:stageY,x2:stageCx[i+1]-sW/2-2,y2:stageY,class:'arrow','marker-end':'url(#ah)'});
+  }
+  // combinational bracket
+  add('path',{d:`M${stageCx[0]-sW/2-6} ${stageY+sH/2+16} L${stageCx[0]-sW/2-6} ${stageY+sH/2+26} L${stageCx[3]+sW/2+6} ${stageY+sH/2+26} L${stageCx[3]+sW/2+6} ${stageY+sH/2+16}`,class:'bracket'});
+  add('text',{x:(stageCx[0]+stageCx[3])/2,y:stageY+sH/2+42,class:'bracket-lab'},'combinational · one cycle · no register, no SRAM');
+
+  // dynamic connectors (in: L1 port -> stage0 ; out: stage3 -> L2 port)
+  const wireIn = add('path',{d:'',class:'wire'});
+  const wireOut = add('path',{d:'',class:'wire'});
+
+  function elbow(x1,y1,x2,y2){ const mx=(x1+x2)/2; return `M${x1} ${y1} L${mx} ${y1} L${mx} ${y2} L${x2} ${y2}`; }
+
+  const $=id=>document.getElementById(id);
+  // ---- render -------------------------------------------------------
+  function render(idx){
+    // idx: -1 idle, 0..3 active channel, 4 done
+    for(let c=0;c<NC;c++){
+      accChip[c].classList.remove('active'); accVal[c].classList.remove('active');
+      actChip[c].classList.remove('active');
+      l1port[c].classList.remove('hot'); l2port[c].classList.remove('hot');
+    }
+    for(let i=0;i<4;i++){ stageBox[i].classList.remove('hot'); stageVal[i].textContent=''; stageVal[i].className.baseVal='stage-val'; }
+    wireIn.classList.remove('hot'); wireOut.classList.remove('hot'); wireIn.setAttribute('d',''); wireOut.setAttribute('d','');
+
+    // fill activations for completed channels
+    for(let c=0;c<NC;c++){
+      if(idx>c || idx>=NC){ actVal[c].textContent=stages[c].p4; actChip[c].classList.add('filled'); }
+      else if(idx===c){ /* set below */ }
+      else { actVal[c].textContent='–'; actChip[c].classList.remove('filled'); }
+    }
+
+    $('progNow').textContent = Math.max(0,Math.min(idx<0?0:idx+(idx>=NC?0:1),NC));
+
+    if(idx<0){ $('stepTag').textContent='idle';
+      $('status').innerHTML='Press <b>Play</b> to push each channel through requantize into Layer 2.'; return; }
+    if(idx>=NC){ $('stepTag').textContent='done';
+      const outs=stages.map(s=>s.p4);
+      $('status').innerHTML='All channels requantized in place. <span class="m">act = ['+outs.join(', ')+']</span> flows straight into Layer 2, no buffer between.'; return; }
+
+    const c=idx, s=stages[c];
+    $('stepTag').textContent='channel '+c;
+    // highlight source + dest
+    accChip[c].classList.add('active'); accVal[c].classList.add('active');
+    l1port[c].classList.add('hot'); l2port[c].classList.add('hot');
+    actChip[c].classList.add('active','filled'); actVal[c].textContent=s.p4;
+
+    // connectors
+    wireIn.setAttribute('d', elbow(L1.x+L1.w+14+chipW, rowY[c], stageCx[0]-sW/2, stageY));
+    wireOut.setAttribute('d', elbow(stageCx[3]+sW/2, stageY, L2.x-14-chipW, rowY[c]));
+    wireIn.classList.add('hot'); wireOut.classList.add('hot');
+
+    // stage values + semantic coloring
+    const vals=[s.p1,s.p2,s.p3,s.p4];
+    for(let i=0;i<4;i++){
+      stageBox[i].classList.add('hot');
+      stageVal[i].textContent = vals[i];
+      let cl='stage-val on';
+      if(i===2 && s.relu) cl='stage-val relu';
+      if(i===3 && s.clip) cl='stage-val clip';
+      stageVal[i].className.baseVal=cl;
+    }
+
+    // status
+    let extra='';
+    if(s.relu) extra=' <span class="neg">ReLU clamps '+s.p2+' → 0</span>';
+    else if(s.clip) extra=' <span class="clip">clip saturates '+s.p3+' → '+s.p4+'</span>';
+    $('status').innerHTML='acc['+c+']='+s.a+' &#215; '+SQ+' = '+s.p1+' &nbsp;→&nbsp; &gt;&gt;'+Q+' = '+s.p2+
+      ' &nbsp;→&nbsp; ReLU = '+s.p3+' &nbsp;→&nbsp; clip = <b>'+s.p4+'</b> &nbsp;⇒&nbsp; act['+c+']='+s.p4+'.'+extra;
+  }
+
+  // ---- transport ----------------------------------------------------
+  let idx=-1, timer=null;
+  const speeds={1:1600,2:1100,3:780,4:500,5:300};
+  function setPlay(on){const b=$('play');
+    if(on){b.textContent='❚❚ Pause';b.classList.remove('primary');}
+    else{b.textContent='▶ Play';if(idx>=NC||idx<0)b.classList.add('primary');}}
+  function stop(){if(timer){clearInterval(timer);timer=null;}setPlay(false);}
+  function tick(){ if(idx>=NC){stop();return;} idx++; render(idx); if(idx>=NC)stop(); }
+  function play(){ if(idx>=NC){idx=-1;render(idx);} stop(); setPlay(true);
+    timer=setInterval(tick,speeds[$('speed').value]); tick(); }
+  $('play').onclick=()=>{ if(timer)stop(); else play(); };
+  $('step').onclick=()=>{ stop(); if(idx<NC){idx++;render(idx);} };
+  $('back').onclick=()=>{ stop(); if(idx>-1){idx--;render(idx);} };
+  $('reset').onclick=()=>{ stop(); idx=-1; render(idx); setPlay(false); $('play').classList.add('primary'); };
+  $('speed').oninput=()=>{ if(timer){clearInterval(timer);timer=setInterval(tick,speeds[$('speed').value]);} };
+  render(-1);
+})();
+</script>
