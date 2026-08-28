@@ -515,7 +515,29 @@ def normalize_bln_pins(lef_path, n_cols: int) -> None:
         if in_vpwr and s[:1] == ["RECT"] and vpwr_layer == "met4":
             ln = "        RECT 0.000 96.350 54.500 97.650 ;"
         out2.append(ln)
-    lef_path.write_text("\n".join(out2) + "\n")
+
+    # Reclassify the power pins. Magic's `lef write` labels VPWR/VGND with
+    # ANTENNADIFFAREA and no power classification, but LibreLane needs them
+    # marked USE POWER / USE GROUND to build the PDN connectivity; emit the
+    # signed-off form (USE line right after the PIN, antenna line dropped).
+    out3 = []
+    cur = None
+    for ln in out2:
+        s = ln.split()
+        if s[:1] == ["PIN"] and len(s) == 2:
+            cur = s[1]
+            out3.append(ln)
+            if cur == "VPWR":
+                out3.append("    USE POWER ;")
+            elif cur == "VGND":
+                out3.append("    USE GROUND ;")
+            continue
+        if s[:1] == ["END"] and len(s) == 2:
+            cur = None
+        if cur in ("VPWR", "VGND") and s[:1] == ["ANTENNADIFFAREA"]:
+            continue
+        out3.append(ln)
+    lef_path.write_text("\n".join(out3) + "\n")
 
 
 def main() -> int:
