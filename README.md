@@ -93,7 +93,7 @@ Full repo environment:
 
 ```bash
 uv sync                            # Python 3.11 + pinned deps into .venv (uv.lock)
-bash tools/apply_env_patches.sh    # re-apply the librelane sign-off ECO hook (required)
+tools/apply_env_patches.sh         # re-apply the librelane sign-off ECO hook (required)
 
 # Bit-exact validation: Python reference vs Verilator vs PyTorch on
 # real Microsoft BitNet b1.58-2B-4T weight slices.
@@ -103,12 +103,12 @@ tools/run_tests.sh
 # per-level LVS, functional regression). Default reproduces the submitted
 # test0 config. Ends with "Circuits match uniquely" + a PASS line.
 tools/rebuild_tt_digital.sh            # digital vehicle (submitted: test0)
-tools/rebuild_tt_analog.sh             # analog vehicle (legacy; adds the band)
+tools/rebuild_tt_analog.sh             # analog vehicle (adds the band)
 # Any macro at any shape (the reusable unit):
 tools/gen_macro.sh 64 32 checker       # e.g. (re)build the verification anchor
 
 # Chip flow to full signoff (LibreLane: ~15 min):
-bash librelane/cirom_chip_digital/run_librelane.sh   # banded analog variant: librelane/cirom_chip_analog/
+librelane/cirom_chip_digital/run_librelane.sh        # banded analog variant: librelane/cirom_chip_analog/
 ```
 
 Compile your own weights: drop `weights/<name>.wmat` (rows of `+-0`
