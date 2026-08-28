@@ -35,7 +35,7 @@
                 vertex="1" parent="g_train">
           <mxGeometry x="20" y="40" width="200" height="50" as="geometry"/>
         </mxCell>
-        <mxCell id="b_commit" value="importer: frontend/bitnet_hf.py&#10;(reference: HF BitNet b1.58 loader)"
+        <mxCell id="b_commit" value="importer: frontend/hf.py&#10;(ternary checkpoint loader: BitNet b1.58 + kin)"
                 style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#9673A6;fontSize=11;"
                 vertex="1" parent="g_train">
           <mxGeometry x="20" y="100" width="200" height="50" as="geometry"/>
@@ -130,7 +130,7 @@
                 vertex="1" parent="1">
           <mxGeometry x="360" y="370" width="220" height="180" as="geometry"/>
         </mxCell>
-        <mxCell id="b_pyref" value="reference.py · reference_nor.py&#10;reference_biroma.py · reference_between.py&#10;bit-exact spec of every primitive"
+        <mxCell id="b_pyref" value="reference/mac.py · reference/nor.py&#10;reference/biroma.py · reference/between.py&#10;bit-exact spec of every primitive"
                 style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6C8EBF;fontSize=11;"
                 vertex="1" parent="g_pyref">
           <mxGeometry x="20" y="50" width="180" height="100" as="geometry"/>
@@ -179,7 +179,7 @@
              ROW 3 — area / analysis chain (left to right). Six boxes with
              60 px inter-box gap and 40 px L/R inset inside the swimlane.
              ================================================================ -->
-        <mxCell id="g_area" value="Targets &amp; analysis (ankhdjet/area_model.py + pdk/)"
+        <mxCell id="g_area" value="Targets &amp; analysis (ankhdjet/estimate/area_model.py + pdk/)"
                 style="swimlane;startSize=28;fillColor=#F0F0F0;strokeColor=#666666;html=1;fontSize=12;fontStyle=1;"
                 vertex="1" parent="1">
           <mxGeometry x="60" y="620" width="1740" height="180" as="geometry"/>
@@ -199,7 +199,7 @@
                 vertex="1" parent="g_area">
           <mxGeometry x="600" y="50" width="240" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="b_fit" value="fit_finder.py&#10;largest BitNet that&#10;fits 815 mm² @ each node"
+        <mxCell id="b_fit" value="estimate/fit.py&#10;largest ternary model that&#10;fits a given die area @ each node"
                 style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#666666;fontSize=11;"
                 vertex="1" parent="g_area">
           <mxGeometry x="900" y="50" width="220" height="80" as="geometry"/>
