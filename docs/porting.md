@@ -45,9 +45,10 @@ implementation as the worked example and GF180MCU as a partial port
    miss hand-assembly defect classes (jog-abutment shorts, well
    overlaps onto device diffusion; the LVS forensics record has the
    catalog).
-3. `tools/rebuild_all.sh checker test0` is the reference driver at
-   SKY130; a port reproduces its per-level structure against the
-   new PDK's decks and models.
+3. `tools/gen_macro.sh <N> <M> <name> [wmat]` (driven per vehicle by
+   `tools/rebuild_tt_digital.sh`) is the reference driver at SKY130; a
+   port reproduces its per-level structure against the new PDK's decks
+   and models.
 
 ## 4. Views
 

@@ -99,12 +99,13 @@ bash tools/apply_env_patches.sh    # re-apply the librelane sign-off ECO hook (r
 # real Microsoft BitNet b1.58-2B-4T weight slices.
 tools/run_tests.sh
 
-# Rebuild + re-verify the entire silicon stack from generators:
-# cells, arrays, mask programming, macros, bands, per-level LVS,
-# functional regressions. Ends with:
-#   [band16] Circuits match uniquely.
-#   [test0] PASS: 396 checks, 0 errors
-tools/rebuild_all.sh checker test0
+# Rebuild + re-verify a submitted vehicle from generators (cells, macro,
+# per-level LVS, functional regression). Default reproduces the submitted
+# test0 config. Ends with "Circuits match uniquely" + a PASS line.
+tools/rebuild_tt_digital.sh            # digital vehicle (submitted: test0)
+tools/rebuild_tt_analog.sh             # analog vehicle (legacy; adds the band)
+# Any macro at any shape (the reusable unit):
+tools/gen_macro.sh 64 32 checker       # e.g. (re)build the verification anchor
 
 # Chip flow to full signoff (LibreLane: ~15 min):
 bash librelane/cirom_chip_digital/run_librelane.sh   # banded analog variant: librelane/cirom_chip_analog/
@@ -140,7 +141,7 @@ uv run ankhdjet fit --bracketed           # largest ternary transformer per die 
 | Layer | Check | Receipt |
 |---|---|---|
 | Compiler/RTL | bit-exact vs Python reference (Verilator), incl. Microsoft b1.58-2B-4T slices | `tools/run_tests.sh` |
-| Cell/row/band/macro | Magic + KLayout DRC; flat-extraction netgen vs generated schematics | `tools/rebuild_all.sh` → "Circuits match uniquely" per level |
+| Cell/row/band/macro | Magic + KLayout DRC; flat-extraction netgen vs generated schematics | `tools/rebuild_tt_digital.sh` → "Circuits match uniquely" per level |
 | Analog variant | 250-trial Monte Carlo comparator offset; extracted-netlist read validation (discharge, coupling, kickback, VREF) across corners | `cell/sky130/*/sim*/` timestamped logs |
 | Chip | KLayout `sky130A_mr.drc` (full options), netgen LVS, OpenSTA, functional regression per weight matrix | `librelane/cirom_chip_*/runs/<tag>/final/metrics.json` |
 | Silicon vehicles | TinyTapeout's hosted gds / precheck / docs workflows (third-party infrastructure) | [tt_um_azara_cirom](https://github.com/mpai17/tt_um_azara_cirom/actions) · [tt_um_darga_cirom](https://github.com/mpai17/tt_um_darga_cirom/actions) |
@@ -163,8 +164,8 @@ rtl/                chip top + functional bench; column/between-layer/
 ankhdjet/           PyTorch frontend, Verilog backend, bit-exact
                     references, area/throughput model
 weights/            committed {+,-,0} matrices (the mask source format)
-tools/              rebuild_all.sh, ECO fill generator, GDS renderer,
-                    cross-PDK analysis, OpenROAD anchor harness
+tools/              gen_cells/gen_macro + rebuild_tt_* drivers, ECO fill
+                    generator, GDS renderer, cross-PDK analysis, anchor harness
 docs/               design records + figures/
 tests/              Verilator bit-exact suite
 ```

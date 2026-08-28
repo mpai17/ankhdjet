@@ -209,7 +209,7 @@
                 vertex="1" parent="g_area">
           <mxGeometry x="1180" y="50" width="240" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="b_show" value="tools/run_tests.sh&#10;bit-exact suite runner&#10;tools/rebuild_all.sh: silicon stack"
+        <mxCell id="b_show" value="tools/run_tests.sh&#10;bit-exact suite runner&#10;tools/rebuild_tt_*.sh: silicon stack"
                 style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#666666;fontSize=11;"
                 vertex="1" parent="g_area">
           <mxGeometry x="1480" y="50" width="200" height="80" as="geometry"/>
