@@ -5,6 +5,7 @@
 <p align="center">
   <a href="https://github.com/mpai17/ankhdjet/actions/workflows/fast-check.yml"><img alt="fast-check" src="https://img.shields.io/github/actions/workflow/status/mpai17/ankhdjet/fast-check.yml?branch=master&style=for-the-badge&label=fast-check"></a>
   <a href="LICENSE"><img alt="License Apache 2.0" src="https://img.shields.io/badge/license-Apache_2.0-blue?style=for-the-badge"></a>
+  <a href="https://arxiv.org/abs/2608.26206"><img alt="arXiv 2608.26206" src="https://img.shields.io/badge/arXiv-2608.26206-b31b1b?style=for-the-badge"></a>
 </p>
 
 **Ankhdjet is node-agnostic compiler infrastructure for hardwiring
