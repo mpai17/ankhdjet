@@ -18,7 +18,8 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 TEMPLATE = HERE / "test_harness.sp"
-SKY130_LIB = Path.home() / ".volare/sky130A/libs.tech/ngspice/sky130.lib.spice"
+SKY130_LIB = (Path(os.environ.get("PDK_ROOT", Path.home() / ".ciel"))
+              / "sky130A/libs.tech/ngspice/sky130.lib.spice")
 REPO = HERE.parent.parent.parent.parent
 
 sys.path.insert(0, str(REPO))

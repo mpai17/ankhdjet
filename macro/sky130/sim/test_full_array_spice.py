@@ -43,10 +43,16 @@ from pathlib import Path
 
 import pytest
 
-from conftest import MACRO_DIR
+from conftest import MACRO_DIR, REPO
 
 
 RUNNER = MACRO_DIR / "sim" / "spice_integration" / "runner.py"
+SA_SCHEMATIC = REPO / "cell" / "sky130" / "strongarm" / "strongarm_schematic.spice"
+
+pytestmark = pytest.mark.skipif(
+    not SA_SCHEMATIC.exists(),
+    reason="StrongARM schematic not in this checkout (cell/sky130/strongarm)",
+)
 
 
 def test_smoke_random_4x2_tt() -> None:
