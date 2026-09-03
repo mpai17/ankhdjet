@@ -12,9 +12,15 @@ set -u
 cd "$(dirname "$0")/.."
 
 # Tier: --fast runs only the quick tests/test_*.py (Verilator + PyTorch
-# bridge); the default (full) also runs the heavy component SPICE suites.
+# bridge); --nightly adds the heavy component SPICE suites that rebuild from
+# the committed sources (bitcell, precharge, macro); the default (full) also
+# runs the StrongARM suite, whose layout and schematic live outside the
+# checkout.
 MODE="full"
-[ "${1:-}" = "--fast" ] && MODE="fast"
+case "${1:-}" in
+    --fast)    MODE="fast" ;;
+    --nightly) MODE="nightly" ;;
+esac
 
 # All invocations go through uv with the project pinned, so per-suite
 # `cd` does not change which environment runs.
@@ -61,16 +67,16 @@ for t in tests/test_*.py; do
     gzip -f "$out_file"
 done
 
-# Heavy component SPICE suites -- full tier only (--fast skips these). Each
-# suite's own runners already write a timestamped summary log to their
-# build_*/ dir; here we record only the pytest pass/fail headline.
-if [ "$MODE" = "full" ]; then
+# Heavy component SPICE suites (--fast skips these). Each suite's own
+# runners already write a timestamped summary log to their build_*/ dir;
+# here we record only the pytest pass/fail headline.
+if [ "$MODE" != "fast" ]; then
     PYTEST_SUITES=(
         "cell/sky130/bitcell_v4/sim"
         "cell/sky130/precharge/sim"
-        "cell/sky130/strongarm/sim"
         "macro/sky130/sim"
     )
+    [ "$MODE" = "full" ] && PYTEST_SUITES+=("cell/sky130/strongarm/sim")
     for suite in "${PYTEST_SUITES[@]}"; do
         out=$(cd "$suite" && $PY -m pytest -q 2>&1)
         rc=$?

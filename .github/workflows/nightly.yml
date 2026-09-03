@@ -1,0 +1,116 @@
+name: nightly
+
+# Nightly silicon receipt on a GitHub-hosted runner. Rebuilds the leaf cells
+# and the committed test0 macro program from source with pinned Magic and netgen
+# against the pinned sky130 PDK, proves the signed-off abstracts reproduce
+# byte-for-byte, then runs the heavy SPICE tier (tools/run_tests.sh
+# --nightly), which includes the extracted-macro read sweep at every corner.
+# Every result log is kept as a run artifact. Scheduled workflows run on the
+# default branch and pause after 60 days without a push; workflow_dispatch
+# runs it on demand.
+on:
+  schedule:
+    - cron: '0 9 * * *'   # 09:00 UTC daily
+  workflow_dispatch:
+
+concurrency:
+  group: nightly
+  cancel-in-progress: false
+
+env:
+  MAGIC_VERSION: 8.3.637
+  NETGEN_VERSION: 1.5.319
+  SKY130_HASH: 1e931c9417df0478df9ee6b7289202f3e87440ab
+
+jobs:
+  silicon:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install simulators and build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            ngspice verilator iverilog \
+            build-essential tcl-dev tk-dev libcairo2-dev libx11-dev \
+            libglu1-mesa-dev mesa-common-dev csh m4
+
+      # Magic and netgen are pinned to the versions the signed-off views were
+      # produced with, built once and cached; a version bump is deliberate.
+      - name: Cache Magic and netgen
+        id: eda-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/eda
+          key: eda-magic-${{ env.MAGIC_VERSION }}-netgen-${{ env.NETGEN_VERSION }}-ubuntu-24.04
+
+      - name: Build Magic and netgen
+        if: steps.eda-cache.outputs.cache-hit != 'true'
+        run: |
+          set -e
+          git clone --depth 1 --branch "$MAGIC_VERSION" https://github.com/RTimothyEdwards/magic /tmp/magic
+          (cd /tmp/magic && ./configure --prefix="$HOME/eda" && make -j"$(nproc)" && make install)
+          git clone --depth 1 --branch "$NETGEN_VERSION" https://github.com/RTimothyEdwards/netgen /tmp/netgen
+          (cd /tmp/netgen && ./configure --prefix="$HOME/eda" && make -j"$(nproc)" && make install)
+
+      - name: Put the EDA tools on PATH
+        run: echo "$HOME/eda/bin" >> "$GITHUB_PATH"
+
+      - name: Cache the sky130 PDK
+        id: pdk-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ciel
+          key: ciel-sky130-${{ env.SKY130_HASH }}
+
+      - name: Install the sky130 PDK
+        if: steps.pdk-cache.outputs.cache-hit != 'true'
+        run: |
+          pipx install ciel==2.6.0
+          ciel enable --pdk sky130 "$SKY130_HASH"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Sync uv env
+        run: |
+          uv sync
+          bash tools/apply_env_patches.sh
+
+      - name: Record tool versions
+        run: |
+          magic --version
+          netgen -batch exit 2>&1 | head -1
+          ngspice --version | sed -n 2p
+          verilator --version
+          ls -la ~/.ciel
+
+      - name: Rebuild the leaf cells and the test0 macro
+        run: |
+          bash tools/gen_cells.sh
+          bash tools/gen_macro.sh 64 32 test0 weights/test0.wmat
+
+      - name: Signed-off abstracts reproduce byte-for-byte
+        run: git diff --exit-code --stat -- macro/sky130/abstracts
+
+      - name: Heavy regression tier
+        run: bash tools/run_tests.sh --nightly
+
+      - name: Keep the result logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-logs-${{ github.run_id }}
+          if-no-files-found: warn
+          path: |
+            build/logs/**
+            macro/sky130/build/extracted_macro/*.log
+            macro/sky130/build/extracted_macro/*.csv
+            macro/sky130/build/**/summary_*.log
+            cell/sky130/*/build*/summary_*.log
+            cell/sky130/*/sim/build*/summary_*.log
+            cell/sky130/macro/build/lvs_test0.rpt
