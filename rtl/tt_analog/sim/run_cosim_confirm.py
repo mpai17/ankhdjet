@@ -1,22 +1,63 @@
 #!/usr/bin/env python3
-"""Mixed-signal confirm for the REBUILT (signoff-arch, no-mux) controller:
-drives the RC-extracted array + sense amps with the new controller's ACTUAL
-PRE_N/WL/STROBE waveform, at ff/125 with the real (divider+decap) VREF -- the
-tightest case from the earlier sweep. Confirms the rebuilt controller's timing
-still resolves the +1 read correctly with healthy margin (re-measuring the
-sense path on the actual design rather than assuming it transfers).
+"""Mixed-signal confirm for the signoff-arch (no-mux) controller: drives the
+RC-extracted array + sense amps with the controller's ACTUAL PRE_N/WL/STROBE
+waveform, at ff/125 with the real (divider+decap) VREF -- the tightest case
+from the earlier sweep. Confirms the controller's timing resolves the row-0
+column-0 read correctly with healthy margin, re-measuring the sense path on
+the actual design rather than assuming it transfers.
 
-Sense path is cell -> SA directly (no mux), which IS the signoff architecture.
-Run from the repo root.
+The array is the macro's RC extraction (cell/sky130/macro/extract_rc.tcl,
+ANKHDJET_MACRO selects the program; default the submitted test0) and the
+expected read comes from the program's weight source, so the confirm follows
+the mask program. Sense path is cell -> SA directly (no mux), which IS the
+signoff architecture. Run from the repo root.
 """
 import os, re, subprocess, sys, time
 
 ROOT  = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-BUILD = os.path.join(ROOT, "rtl", "tt", "sim", "build")
-RC    = os.path.join(ROOT, "cell", "sky130", "macro", "build", "macro_rc_clean.spice")
+BUILD = os.path.join(ROOT, "rtl", "tt_analog", "sim", "build")
+MACRO = os.environ.get("ANKHDJET_MACRO", "macro_array_pc_64x32_test0")
+RC_RAW = os.path.join(ROOT, "cell", "sky130", "macro", "build", f"{MACRO}_rc.spice")
+RC    = os.path.join(ROOT, "cell", "sky130", "macro", "build", f"{MACRO}_rc_clean.spice")
 SA    = os.path.join(ROOT, "cell", "sky130", "sense_se", "sense_col_schematic.spice")
 VDD   = 1.8
 os.makedirs(BUILD, exist_ok=True)
+
+def clean_rc():
+    """Magic's RC netlist tags floating-node capacitors with a bare
+    `**FLOATING` suffix that ngspice rejects as a parameter; strip it."""
+    if os.path.exists(RC) and os.path.getmtime(RC) >= os.path.getmtime(RC_RAW):
+        return
+    with open(RC_RAW) as src, open(RC, "w") as dst:
+        for ln in src:
+            dst.write(re.sub(r"\s*\$?\s*\*\*FLOATING\s*$", "", ln.rstrip("\n")) + "\n")
+
+def expected_weight(row=0, col=0):
+    """The programmed weight at (row, col) from the program's weight source."""
+    program = MACRO.rsplit("_", 1)[1]
+    wmat = os.path.join(ROOT, "weights", f"{program}.wmat")
+    if os.path.exists(wmat):
+        rows = [ln.strip() for ln in open(wmat) if ln.strip()]
+        return {"+": 1, "-": -1, "0": 0}[rows[row][col]]
+    if program == "checker": return 1 if (row + col) % 2 == 0 else -1
+    if program == "all_pos": return 1
+    if program == "all_neg": return -1
+    raise FileNotFoundError(wmat)
+
+def macro_instance():
+    """Instantiate the RC subckt by port name (ports keep their macro names)."""
+    hdr, collect = [], False
+    for ln in open(RC):
+        if ln.lower().startswith(".subckt"): collect = True; hdr.append(ln.strip()); continue
+        if collect:
+            if ln.startswith("+"): hdr.append(ln.strip()[1:])
+            else: break
+    toks = " ".join(hdr).split()
+    name, ports = toks[1], toks[2:]
+    lines = ["Xmacro " + " ".join(ports[:12])]
+    lines += ["+ " + " ".join(ports[i:i + 16]) for i in range(12, len(ports), 16)]
+    lines.append(f"+ {name}")
+    return "\n".join(lines)
 
 def run(cmd, **kw):
     return subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, **kw)
@@ -71,14 +112,16 @@ def shifted_pwl(series, name, shift, vname, idle, vh=VDD, edge=0.1):
            f"pwl({' '.join(f'{t}n {v}' for t, v in pts)})"
 
 def confirm():
+    clean_rc()
     s = parse_vcd(gen_vcd(), ["pre_n_w", "wl0_w", "wl1_w", "strobe_w"])
     t0r, t0f = first_strobe_window(s, "wl0_w")
     pre_falls = [t for t, v in s["pre_n_w"] if v == 0 and t < t0r]
     shift = (max(pre_falls) if pre_falls else 0.0) - 5.0
     sr, sf = round(t0r - shift, 3), round(t0f - shift, 3)        # strobe edge/fall in shifted frame
     wlties = "\n".join(f"V_wl{i} WL_{i} 0 0" for i in range(1, 64))
+    w00 = expected_weight(0, 0)
     deck = "\n".join([
-        "* signoff-arch controller waveform on RC + real VREF, ff/125 (read0 +1)",
+        f"* signoff-arch controller waveform on RC + real VREF, ff/125 (read0 w={w00:+d}, {MACRO})",
         lib_path("ff"), ".temp 125", ".param vdd=1.8",
         f".include {RC}", f".include {SA}",
         "Vdd VPWR 0 dc {vdd}", "Vgnd VGND 0 dc 0",
@@ -87,6 +130,7 @@ def confirm():
         shifted_pwl(s, "wl0_w", shift, "Vwl0", 0),
         shifted_pwl(s, "strobe_w", shift, "Vstr", 0),
         wlties,
+        macro_instance(),
         "Xsap BLP_0 vref hit_p hitb_p strobe VPWR 0 sa_se",
         "Xsan BLN_0 vref hit_n hitb_n strobe VPWR 0 sa_se",
         f".tran 0.02n {round(sf + 3, 2)}n uic", ".control", "run",
@@ -104,16 +148,17 @@ def confirm():
     g = lambda k: (lambda m: float(m.group(1)) if m else None)(re.search(rf"^{k}\s*=\s*([-\d.e+]+)", out, re.M))
     pos_fire = (g("hit_p") or 0) > (g("hitb_p") or 0)
     neg_fire = (g("hit_n") or 0) > (g("hitb_n") or 0)
-    ok = pos_fire and not neg_fire
+    ok = (pos_fire, neg_fire) == {1: (True, False), -1: (False, True), 0: (False, False)}[w00]
     stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
     log = os.path.join(BUILD, f"cosim_confirm_{stamp}.log")
-    lines = [f"mixed-signal confirm (rebuilt no-mux controller) {stamp}",
-             "analog: macro_rc_clean.spice + sense_col_schematic.spice; ff/125; real divider+decap VREF",
-             f"stimulus: rebuilt cirom_tt_ctrl actual waveform (strobe {sr}->{sf}ns shifted frame)",
-             f"read0 (+1): BLP_0(end)={g('blp_end'):.3f} BLN_0(edge)={g('bln_edge'):.3f} BLN_0(end)={g('bln_end'):.3f} VREF(edge)={g('vref_edge'):.3f}",
+    lines = [f"mixed-signal confirm (signoff no-mux controller) {stamp}",
+             f"analog: {os.path.basename(RC)} + sense_col_schematic.spice; ff/125; real divider+decap VREF",
+             f"stimulus: cirom_tt_ctrl actual waveform (strobe {sr}->{sf}ns shifted frame)",
+             f"read0 (w={w00:+d} at row 0 col 0): BLP_0(end)={g('blp_end'):.3f} BLN_0(edge)={g('bln_edge'):.3f} "
+             f"BLN_0(end)={g('bln_end'):.3f} VREF(edge)={g('vref_edge'):.3f}",
              f"  hit_p={g('hit_p'):.3f}/hitb_p={g('hitb_p'):.3f} -> fire_pos={pos_fire}; "
              f"hit_n={g('hit_n'):.3f}/hitb_n={g('hitb_n'):.3f} -> fire_neg={neg_fire}",
-             "RESULT: " + ("PASS (rebuilt controller reads +1 correctly on RC+realVREF at ff/125)"
+             "RESULT: " + (f"PASS (controller reads {w00:+d} correctly on RC+realVREF at ff/125)"
                            if ok else "FAIL")]
     txt = "\n".join(lines); open(log, "w").write(txt + "\n"); print(txt); print("logged ->", log)
     sys.exit(0 if ok else 1)

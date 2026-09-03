@@ -1,9 +1,13 @@
+# RC extraction of a built macro (resistance + capacitance) for the
+# chip-level mixed-signal cosim. ANKHDJET_MACRO selects the macro (default
+# the checker program); writes <macro>_rc.spice into the build dir.
 drc off
 crashbackups stop
-load macro_array_pc_64x32_checker
+set MACRO [expr {[info exists ::env(ANKHDJET_MACRO)] ? $::env(ANKHDJET_MACRO) : "macro_array_pc_64x32_checker"}]
+load $MACRO
 select top cell
-flatten mfc_rc_flat
-load mfc_rc_flat
+flatten ${MACRO}_rc
+load ${MACRO}_rc
 extract do resistance
 extract all
 extresist tolerance 1
@@ -13,6 +17,7 @@ ext2spice extresist on
 ext2spice cthresh 0
 ext2spice rthresh 1
 ext2spice subcircuit on
-ext2spice -o macro_rc.spice
+ext2spice subcircuit top on
+ext2spice -o ${MACRO}_rc.spice
 puts "RC_EXTRACT_DONE"
 quit -noprompt
