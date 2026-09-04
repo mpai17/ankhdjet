@@ -40,8 +40,9 @@ from tests._verilator_runner import build_and_run  # noqa: E402
 # Behavioral fill-in for the (* blackbox *) cirom_array_64x32 module.
 # Per-cycle, row-sequential: at each rising clk edge, given wl_addr it
 # emits bl_pos[m] = HAS_VIA_POS[wl_addr][m] & act_bit (and similarly
-# for neg). HAS_VIA_POS / HAS_VIA_NEG are baked-in parameters chosen
-# by the testbench from the random weight matrix.
+# for neg). HAS_VIA_POS / HAS_VIA_NEG are baked-in parameters whose
+# defaults the test fills from the random weight matrix, since a
+# hierarchical defparam from the bench is not portable across simulators.
 BEHAVIORAL_MACRO = r"""
 module cirom_array_64x32 #(
     parameter int N = 64,
@@ -72,6 +73,13 @@ endmodule
 """
 
 
+def _behavioral_macro(has_pos: np.ndarray, has_neg: np.ndarray) -> str:
+    """The behavioral macro with the matrix baked into its parameter defaults."""
+    return (BEHAVIORAL_MACRO
+            .replace("HAS_VIA_POS = {(N*M){1'b0}}", f"HAS_VIA_POS = {_bitvec_param(has_pos)}")
+            .replace("HAS_VIA_NEG = {(N*M){1'b0}}", f"HAS_VIA_NEG = {_bitvec_param(has_neg)}"))
+
+
 def _strip_blackbox_decl(wrapper_sv: str) -> str:
     """Remove the (* blackbox *) cirom_array_64x32 module decl from
     the auto-generated wrapper so Verilator uses our behavioral
@@ -97,8 +105,6 @@ def _build_tb(N: int, M: int, has_pos: np.ndarray, has_neg: np.ndarray,
               n_cycles: int, act_bits_seq: np.ndarray) -> str:
     """Synthesize the testbench: clock + reset + drive act_bit, print
     result_p / result_n each cycle so the Python harness can compare."""
-    pos_lit = _bitvec_param(has_pos)
-    neg_lit = _bitvec_param(has_neg)
     act_inits = "\n        ".join(
         f"act_seq[{i}] = 1'b{int(act_bits_seq[i])};" for i in range(n_cycles)
     )
@@ -111,13 +117,9 @@ module tb;
     wire [{M-1}:0] result_p;
     wire [{M-1}:0] result_n;
 
-    // Override the behavioral macro's parameters with the test's
-    // random weight matrix. The wrapper's own instance of
-    // cirom_array_64x32 picks these up via Verilog elaboration
-    // (the module name matches; Verilator binds to the only def).
-    defparam u_dut.u_macro.HAS_VIA_POS = {pos_lit};
-    defparam u_dut.u_macro.HAS_VIA_NEG = {neg_lit};
-
+    // The wrapper's own instance of cirom_array_64x32 binds to the
+    // behavioral definition, whose parameter defaults carry the test's
+    // random weight matrix.
     cirom_array_{N}x{M}_test_harness u_dut (
         .clk(clk),
         .rst_n(rst_n),
@@ -201,7 +203,7 @@ def test_wrapper_behavioral_matches_reference(tmp_path, seed: int) -> None:
     wrapper_clean = _strip_blackbox_decl(wrapper_sv)
 
     (tmp_path / "wrapper.sv").write_text(wrapper_clean)
-    (tmp_path / "behavioral_macro.sv").write_text(BEHAVIORAL_MACRO)
+    (tmp_path / "behavioral_macro.sv").write_text(_behavioral_macro(has_pos, has_neg))
     (tmp_path / "tb.sv").write_text(_build_tb(rows, cols, has_pos, has_neg,
                                               n_cycles, act_seq))
 
