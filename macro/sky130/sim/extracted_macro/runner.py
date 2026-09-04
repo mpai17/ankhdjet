@@ -186,9 +186,12 @@ def extract_for_sim(macro: str, force: bool = False) -> Path:
         'puts "CSIM_EXTRACT_DONE"',
         "quit -noprompt",
     ]) + "\n"
+    # the PDK's rcfile locates the tech file through PDK_ROOT, falling back to the
+    # path it was built at, so the environment has to carry the root
+    env = {**os.environ, "PDK_ROOT": str(pdk_root())}
     r = subprocess.run(
         ["magic", "-dnull", "-noconsole", "-rcfile", str(magicrc())],
-        cwd=CELL_BUILD, input=tcl, text=True, capture_output=True, timeout=1800,
+        cwd=CELL_BUILD, input=tcl, text=True, capture_output=True, timeout=1800, env=env,
     )
     if "CSIM_EXTRACT_DONE" not in r.stdout or not out.exists():
         raise RuntimeError(f"magic extraction failed for {macro}:\n"
