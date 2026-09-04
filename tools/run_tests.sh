@@ -69,7 +69,8 @@ done
 
 # Heavy component SPICE suites (--fast skips these). Each suite's own
 # runners already write a timestamped summary log to their build_*/ dir;
-# here we record only the pytest pass/fail headline.
+# here we keep the suite's full pytest output beside the per-test logs and
+# record its headline in the summary.
 if [ "$MODE" != "fast" ]; then
     PYTEST_SUITES=(
         "cell/sky130/bitcell_v4/sim"
@@ -80,11 +81,13 @@ if [ "$MODE" != "fast" ]; then
     for suite in "${PYTEST_SUITES[@]}"; do
         out=$(cd "$suite" && $PY -m pytest -q 2>&1)
         rc=$?
+        # the suite's full pytest output, like the per-test logs above
+        echo "$out" | gzip > "${log_dir}/${suite//\//_}.stdout.gz"
+        summary_ln=$(echo "$out" | grep -E "passed|failed|error" | tail -1)
         if [ $rc -ne 0 ]; then
-            result="FAIL (rc=$rc)"
+            result="FAIL (rc=$rc)  ${summary_ln:0:100}"
             exit_code=1
         else
-            summary_ln=$(echo "$out" | grep -E "passed|failed|error" | tail -1)
             result="ok  ${summary_ln:0:100}"
         fi
         printf '%-45s %s\n' "$suite" "$result" | tee -a "$summary"
