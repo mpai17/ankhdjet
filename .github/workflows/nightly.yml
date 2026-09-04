@@ -20,6 +20,7 @@ concurrency:
 env:
   MAGIC_VERSION: 8.3.637
   NETGEN_VERSION: 1.5.319
+  KLAYOUT_VERSION: 0.30.12
   SKY130_HASH: 1e931c9417df0478df9ee6b7289202f3e87440ab
 
 jobs:
@@ -36,6 +37,14 @@ jobs:
             ngspice verilator iverilog \
             build-essential tcl-dev tk-dev libcairo2-dev libx11-dev \
             libglu1-mesa-dev mesa-common-dev csh m4
+
+      # KLayout relabels the macro pins and reads the abstract bounding boxes when the
+      # test0 macro is rebuilt; pinned to the version the signed-off abstracts were made with.
+      - name: Install KLayout
+        run: |
+          curl -fsSL -o /tmp/klayout.deb \
+            "https://www.klayout.org/downloads/Ubuntu-24/klayout_${KLAYOUT_VERSION}-1_amd64.deb"
+          sudo apt-get install -y --no-install-recommends /tmp/klayout.deb
 
       # Magic and netgen are pinned to the versions the signed-off views were
       # produced with, built once and cached; a version bump is deliberate.
@@ -85,6 +94,7 @@ jobs:
         run: |
           magic --version
           netgen -batch exit 2>&1 | head -1
+          klayout -v
           ngspice --version | sed -n 2p
           verilator --version
           ls -la ~/.ciel
