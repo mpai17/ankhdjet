@@ -34,7 +34,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            ngspice verilator iverilog \
+            ngspice verilator iverilog yosys \
             build-essential tcl-dev tk-dev libcairo2-dev libx11-dev \
             libglu1-mesa-dev mesa-common-dev csh m4
 

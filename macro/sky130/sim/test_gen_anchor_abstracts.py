@@ -128,6 +128,8 @@ def test_lef_well_formed(rows, cols, pdk, biroma):
 def test_wrapper_yosys_parses(rows, cols, pdk, biroma):
     """Yosys must read the auto-generated wrapper RTL without errors.
     Parse-only (read_verilog + hierarchy -check) — no synthesis."""
+    if shutil.which("yosys") is None:
+        pytest.skip("yosys not installed")
     stem = _stem(rows, cols, pdk, biroma)
     wrapper_stem = stem.replace("_biroma", "")
     wrapper = MACRO_DIR / "build" / f"{wrapper_stem}_wrapper.sv"
