@@ -1,10 +1,13 @@
 # Scaled-process PDK descriptors (estimates only - no actual base cell).
 # Used to project "what if we moved to a denser node?" in area reports.
-# The ROM bitcell scales from the SKY130 AS-BUILT anchor (sky130_v4.yaml,
-# bitcell 2.21 um^2/weight, one weight per cell, no array overhead baked
-# in: estimate_layer applies array_overhead_frac separately) by the
-# square of the feature-size ratio. Clock frequency scales roughly with
-# process (linear).
+# The ROM bitcell is the SKY130 AS-BUILT anchor (sky130_v4.yaml, bitcell
+# 2.21 um^2/weight, one weight per cell, no array overhead baked in:
+# estimate_layer applies array_overhead_frac separately). generic_65nm
+# scales it by the square of the feature-size ratio. generic_28nm and
+# generic_6nm carry it over at the node's pitches instead, as asap7.yaml
+# does, scaling by minimum metal pitch over 0.34 um and contacted gate
+# pitch over 0.46 um (the sky130_fd_sc_hd routing grid and site). Clock
+# frequency scales roughly with process (linear).
 #
 # SRAM and gate area come from published process data instead, because
 # node names stopped tracking pitches below about 28 nm and the square of
@@ -47,7 +50,7 @@
 - name: generic_28nm
   process_nm: 28
   node_scale: 21.6                  # (130/28)^2 ~= 21.6
-  bitcell_um2: 0.1025            # 2.21 * (28/130)^2
+  bitcell_um2: 0.149             # 2.21 x 90/340 metal pitch x 117/460 gate pitch (https://www.realworldtech.com/iedm-2010/6, https://semiwiki.com/semiconductor-manufacturers/tsmc/1789-16nm-finfet-versus-20nm-planar/)
   gate_equivalent_um2: 0.23         # raw gate density 3900 kgate/mm^2 gives 0.26 per NAND2 (https://www.eetimes.com/?p=1171184)
   transistors_per_gate: 4
   popcount_gates_per_row: 25
@@ -69,7 +72,7 @@
 - name: generic_6nm
   process_nm: 6
   node_scale: 469.4                 # (130/6)^2 ~= 469
-  bitcell_um2: 0.00471           # 2.21 * (6/130)^2
+  bitcell_um2: 0.032             # 2.21 x 40/340 metal pitch x 57/460 gate pitch (https://us.design-reuse.com/news/41051/tsmc-ibm-7-nm.html, https://en.wikichip.org/wiki/N7)
   gate_equivalent_um2: 0.037        # NAND2 area, N7's 91.2 MTr/mm^2 over 4 transistors (https://en.wikichip.org/wiki/N7) less N6's 18% logic density gain
   transistors_per_gate: 4
   popcount_gates_per_row: 25

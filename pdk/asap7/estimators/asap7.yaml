@@ -4,14 +4,19 @@
 #   - asap7sc7p5t_28 RVT TT NLDM Liberty cell areas (NAND2xp33 = 0.058 um^2)
 #   - The-OpenROAD-Project/asap7_sram_0p0 FakeRAM measurements (~0.04 um^2/bit)
 #   - Clark et al. 2016 + Vashishtha/Clark ICCAD 2017 cell-design papers
-#   - bitcell_um2 set bottom-up: a bitcell is wire-pitch-dominated, ~NAND2 +
-#     20% routing overhead. Naive (node/130)^2 = 0.0077 um^2 is wrong because
-#     ASAP7 deliberately uses 27 nm M1 / 54 nm M2 pitch (predictive, not fully
-#     scaled to TSMC N7 dimensions). 0.07 um^2 nominal; 0.05/0.10 sensitivity.
+#   - bitcell_um2 is the silicon-verified SKY130 bitcell_v4 (1.70 x 1.30 um,
+#     2.21 um^2) carried over at ASAP7's pitches. Its column is set by metal
+#     pitch (two bitlines, ground strips) and its row by contacted gate pitch,
+#     so it scales by 36/340 nm M1 pitch times 54/460 nm gate pitch, the
+#     ratios of ASAP7 to the sky130_fd_sc_hd routing grid and site. ASAP7's
+#     36 nm M1 and 27 nm fin pitch are from Vashishtha, Vangala and Clark,
+#     ICCAD 2017 (https://asap.asu.edu/wp-content/uploads/sites/47/2021/11/iccad17_asu_asap7_171115c.pdf);
+#     the 54 nm gate pitch follows from the Liberty NAND2xp33 above, 7.5
+#     tracks x 36 nm by 4 x 54 nm = 0.058 um^2.
 name: asap7
 process_nm: 7
 node_scale: 344.9                 # (130/7)^2
-bitcell_um2: 0.07              # bottom-up; see comment above
+bitcell_um2: 0.027             # bitcell_v4 at ASAP7 pitches; see comment above
 gate_equivalent_um2: 0.058        # asap7sc7p5t NAND2xp33 from Liberty
 transistors_per_gate: 4
 popcount_gates_per_row: 25

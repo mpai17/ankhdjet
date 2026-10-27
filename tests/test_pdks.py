@@ -57,7 +57,7 @@ def test_pack_descriptors_keep_anchored_values():
     assert pdks["gf180"].process_nm == 180
     assert pdks["gf180"].bitcell_um2 == 4.24
     assert pdks["asap7"].process_nm == 7
-    assert pdks["asap7"].bitcell_um2 == 0.07
+    assert pdks["asap7"].bitcell_um2 == 0.027
     assert pdks["asap7"].synth_calibration == 0.42
 
 
