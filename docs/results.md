@@ -36,31 +36,26 @@ decomposes as 2× encoding (one weight per cell vs BiROMA's two) ×
 is periphery-dominated, the as-built anchor costs ~14% total area at
 the 22M reference shape, not 6.8×.
 
-Estimates model the as-built 64-row bitline depth and report the
-readout tier explicitly: analog (per-sub-column clocked StrongARM
-comparators) or digital (full-swing bitline samplers, anchored to the
-measured sampler32 synthesis). Below 28 nm only the digital tier
-exists, so the asap7 anchor reports digital readout.
+Estimates model the as-built 64-row bitline depth with the digital
+readout, a full-swing sampler per bitline anchored to the measured
+sampler32 synthesis.
 
-From `ankhdjet compare` (22M-param shape, tile_cols=16, bracketed
-throughput):
+The table below comes from `ankhdjet compare` (22M-param shape,
+tile_cols=16, bracketed throughput).
 
-| anchor | readout | total mm² | cells mm² | periphery mm² | tok/s (mid) |
-|---|---|---|---|---|---|
-| sky130_v4 (as built) | analog | 458.2 | 48.4 | 334.3 | 190,476 |
-| sky130_v4 (as built) | digital | 285.2 | 48.4 | 183.9 | 190,476 |
-| sky130_biroma_bound | analog | 401.2 | 7.1 | 326.1 | 190,476 |
-| asap7 (anchored) | digital | 4.9 | 1.5 | 2.4 | 1,413,761 |
+| anchor | total mm² | cells mm² | periphery mm² | tok/s (mid) |
+|---|---|---|---|---|
+| sky130_v4 (as built) | 285.2 | 48.4 | 183.9 | 191,022 |
+| sky130_biroma_bound | 228.2 | 7.1 | 175.6 | 191,022 |
+| asap7 (anchored) | 4.9 | 1.5 | 2.4 | 1,421,801 |
 
-From `ankhdjet fit --bracketed` at a reticle-class 815 mm² die, largest fitting BitNet-class shape:
+The next comes from `ankhdjet fit --bracketed` at a reticle-class
+815 mm² die, the largest fitting BitNet-class shape per anchor.
 
 | anchor | largest fit | area | tok/s (mid) |
 |---|---|---|---|
-| sky130_biroma_bound | 41.5M (512×8) | 773 mm² | 303,030 |
-| sky130_v4 (as built) | 22.9M (384×6) | 530 mm² | 320,513 |
-
-(fit table at analog readout; the digital tier's smaller periphery
-fits more at every anchor)
+| sky130_biroma_bound | 41.5M (512×8) | 445 mm² | 292,826 |
+| sky130_v4 (as built) | 41.5M (512×8) | 553 mm² | 298,063 |
 
 The asap7 anchor carries a measured synthesis point (2026-07-13): the
 digital-tier controller synthesizes to 107.85 µm² against the ORFS
