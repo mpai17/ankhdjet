@@ -244,7 +244,7 @@ def estimate_layer(
     layer, pdk: PDK, tile_cols: int = 1,
     bit_parallel: bool = False, k_bits: int = 8,
     nor_array: bool = True, subcol_rows: int = 64,
-    biroma: bool = False, readout: str = "analog",
+    biroma: bool = False,
 ) -> LayerAreaReport:
     """Area for one compiled cirom_column array.
 
@@ -260,13 +260,11 @@ def estimate_layer(
             wrapper area is unchanged. Viable only in the 28-65 nm
             window (NO-GO at 130 nm); the tools gate it there. Compiler
             reference: ankhdjet/reference_biroma.ternary_matmul_biroma.
-        readout: NOR-array readout tier. "analog" = per-sub-column
-            clocked StrongARM comparator pairs (the analog tier;
-            matches the published SKY130 anchors). "digital" = clocked
-            full-swing bitline samplers (capture flop + input buffer;
-            the default tier), anchored to the measured
-            sampler32 synthesis: 1,081 um^2 / 32 bitlines / 5.0 um^2
-            per gate = ~6.8 gate equivalents per bitline at SKY130.
+
+    The NOR-array readout is a clocked full-swing sampler per bitline
+    (capture flop + input buffer), anchored to the measured sampler32
+    synthesis: 1,081 um^2 / 32 bitlines / 5.0 um^2 per gate = ~6.8 gate
+    equivalents per bitline at SKY130.
     """
     W = layer.weights["weight"]
     if W.scheme != QuantScheme.TERNARY:
@@ -306,22 +304,13 @@ def estimate_layer(
         acc_gates_total *= k_bits
 
     if nor_array:
-        # NOR-array peripheral, per readout tier. Both tiers share the
-        # row decoder, precharge drivers, and per-column accumulator;
-        # they differ in what sits on the bitline pair:
-        #   analog:  clocked StrongARM comparator pair (~80 gates each,
-        #            gate-equivalent proxy for the custom sense band)
-        #   digital: full-swing sampler per bitline (capture flop +
-        #            input buffer, ~6.8 gates measured: sampler32
-        #            synthesis 1,081 um^2 for 32 bitlines at SKY130)
+        # NOR-array peripheral: a full-swing sampler per bitline (capture
+        # flop + input buffer, ~6.8 gates measured: sampler32 synthesis
+        # 1,081 um^2 for 32 bitlines at SKY130), the row decoder, the
+        # precharge drivers, and the per-column accumulator.
         # No popcount tree (per-cell digital outputs aren't feasible at 1T).
-        if readout not in ("analog", "digital"):
-            raise ValueError(f"unknown readout tier {readout!r}")
         n_sub = max(1, (n + subcol_rows - 1) // subcol_rows)
-        if readout == "digital":
-            bitline_gates_per_subcol = 6.8 * 2   # one sampler per BL+/BL-
-        else:
-            bitline_gates_per_subcol = 80 * 2    # one comparator per BL+/BL-
+        bitline_gates_per_subcol = 6.8 * 2       # one sampler per BL+/BL-
         decoder_gates_per_subcol = max(1, math.ceil(math.log2(subcol_rows + 1))) * 4
         precharge_gates_per_subcol = 10
         per_col_periph_gates = (
@@ -425,7 +414,6 @@ def estimate_pipeline(
         nor_array=getattr(cfg, "nor_array", True),
         subcol_rows=getattr(cfg, "subcol_rows", 64),
         biroma=biroma,
-        readout=getattr(cfg, "readout", "analog"),
     ) for l in fabric_layers]
     include_ser = (tile_cols == 1)  # serializer only needed in per-column mode
     between_reports = [

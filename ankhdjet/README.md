@@ -92,8 +92,7 @@ bug has to survive all of that to ship.
 **Estimators.** The area model takes IR + config + a PDK descriptor
 YAML and produces block-level area (cells from the anchored
 um2/weight, periphery from synthesis-anchored gate counts, KV SRAM,
-attention engine, overhead) plus a cycle model for tok/s, per
-readout tier. The throughput calibration back-fits the derating
+attention engine, overhead) plus a cycle model for tok/s. The throughput calibration back-fits the derating
 knobs (clock skew vs area, wire hops, KV access cycles) from
 independent evidence classes (silicon back-fits of open-PDK
 tapeouts, IRDS interconnect scaling, SRAM datasheets) into the

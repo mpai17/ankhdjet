@@ -31,8 +31,8 @@ BIROMA_WINDOW_NM = (28.0, 65.0)  # viability window per the BiROMA investigation
 
 def biroma_applies(pdk: PDK, requested: bool) -> bool:
     """BiROMA encoding only inside its 28-65 nm viability window (NO-GO
-    at 130 nm per the investigation record; below 28 nm the analog tier
-    itself ends). Outside the window the request is ignored per node."""
+    at 130 nm per the investigation record). Outside the window the
+    request is ignored per node."""
     if not requested:
         return False
     lo, hi = BIROMA_WINDOW_NM
@@ -45,7 +45,7 @@ def biroma_applies(pdk: PDK, requested: bool) -> bool:
 
 def compile_for_pdk(pdk: PDK, model, arch, kv_context: int,
                      die_budget_mm2: float, cal: dict,
-                     biroma: bool = False, readout: str = "analog") -> dict | None:
+                     biroma: bool = False) -> dict | None:
     biroma = biroma_applies(pdk, biroma)
     kv_bytes_per_tok = (
         arch.n_full_attention_layers * arch.num_key_value_heads * 2 * arch.head_dim
@@ -55,7 +55,7 @@ def compile_for_pdk(pdk: PDK, model, arch, kv_context: int,
 
     chosen_tc = None
     for tc in [16, 32, 64, 128, 256, 512, 1024, 2048]:
-        cfg = PipelineConfig(k_bits=8, tile_cols=tc, pipelined=True, readout=readout)
+        cfg = PipelineConfig(k_bits=8, tile_cols=tc, pipelined=True)
         r = estimate_pipeline(
             model, cfg, p_mid,
             kv_context_tokens=kv_context, kv_bytes_per_token=kv_bytes_per_tok,
@@ -70,7 +70,7 @@ def compile_for_pdk(pdk: PDK, model, arch, kv_context: int,
     if chosen_tc is None:
         return None
 
-    cfg = PipelineConfig(k_bits=8, tile_cols=chosen_tc, pipelined=True, readout=readout)
+    cfg = PipelineConfig(k_bits=8, tile_cols=chosen_tc, pipelined=True)
     rs = []
     for b in ("low", "mid", "high"):
         rs.append(estimate_pipeline(
@@ -108,10 +108,6 @@ def main(argv: list[str] | None = None) -> int:
                          "20M-param BitNet that fits all three open PDKs")
     ap.add_argument("--kv-context", type=int, default=512)
     ap.add_argument("--die-budget-mm2", type=float, default=815.0)
-    ap.add_argument("--readout", choices=["analog", "digital"], default="digital",
-                    help="NOR-array readout tier to model: analog StrongARM "
-                         "comparators (published anchors) or digital "
-                         "full-swing samplers (the default tier).")
     ap.add_argument("--biroma", action="store_true",
                     help="Model BiROMA 2-weights-per-1T-cell encoding "
                          "(halves cell-array area). Applies only inside its "
@@ -148,8 +144,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"[skip] {name}: not in pdk/*.yaml")
             continue
         r = compile_for_pdk(pdks[name], model, arch, args.kv_context,
-                            args.die_budget_mm2, cal, biroma=args.biroma,
-                            readout=args.readout)
+                            args.die_budget_mm2, cal, biroma=args.biroma)
         if r is None:
             print(f"[over] {name}: model does not fit die budget")
             continue

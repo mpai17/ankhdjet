@@ -141,21 +141,6 @@ def test_nor_array_uses_subcol_periph() -> bool:
                 f"pop={rep_pop.popcount_um2:.1f} -> nor={rep_nor.popcount_um2:.1f}")
 
 
-def test_digital_readout_smaller_than_analog() -> bool:
-    n, m = 256, 32
-    pdk = synthetic_pdk()
-    layer = make_layer(n, m)
-    rep_analog  = estimate_layer(layer, pdk, subcol_rows=64, readout="analog")
-    rep_digital = estimate_layer(layer, pdk, subcol_rows=64, readout="digital")
-    # Same cells; the digital tier swaps the per-bitline comparator pair
-    # (~160 gates) for sampler pairs (~13.6 gates, measured sampler32
-    # anchor), so its peripheral must be well below the analog tier's.
-    same_cells = math.isclose(rep_analog.cells_um2, rep_digital.cells_um2, rel_tol=1e-12)
-    return case("readout='digital' peripheral < analog at same shape",
-                same_cells and rep_digital.popcount_um2 < rep_analog.popcount_um2,
-                f"analog={rep_analog.popcount_um2:.1f} digital={rep_digital.popcount_um2:.1f}")
-
-
 def test_array_overhead_frac_applies() -> bool:
     n, m = 32, 16
     pdk_no_ovhd  = synthetic_pdk(array_overhead_frac=0.0)
@@ -178,7 +163,6 @@ def main() -> int:
         test_active_cells_match_nonzeros(),
         test_tile_cols_shares_popcount_tree(),
         test_nor_array_uses_subcol_periph(),
-        test_digital_readout_smaller_than_analog(),
         test_array_overhead_frac_applies(),
     ]
     n_ok = sum(1 for r in results if r)

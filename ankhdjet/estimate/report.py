@@ -45,9 +45,6 @@ def main(argv: list[str] | None = None) -> int:
                     help="Model BiROMA 2-weights-per-1T-cell encoding "
                          "(halves cell-array area term). Applies only inside "
                          "its 28-65 nm viability window; NO-GO at 130 nm.")
-    ap.add_argument("--readout", choices=["analog", "digital"], default="digital",
-                    help="NOR-array readout tier to model (digital is the "
-                         "only tier below 28 nm).")
     ap.add_argument("--subcol-rows", type=int, default=64,
                     help="Rows per bitline (64 = as-built; 256 = "
                          "production-path geometry).")
@@ -119,7 +116,7 @@ def main(argv: list[str] | None = None) -> int:
     chosen_r = None
     for tc in candidates:
         cfg = PipelineConfig(k_bits=args.k_bits, tile_cols=tc, pipelined=True,
-                             readout=args.readout, subcol_rows=args.subcol_rows)
+                             subcol_rows=args.subcol_rows)
         r = estimate_pipeline(
             model, cfg, p_mid,
             kv_context_tokens=args.kv_context,
@@ -140,7 +137,7 @@ def main(argv: list[str] | None = None) -> int:
 
     # Bracket throughput over alpha low/mid/high at the chosen architecture.
     cfg = PipelineConfig(k_bits=args.k_bits, tile_cols=chosen_tc, pipelined=True,
-                         readout=args.readout, subcol_rows=args.subcol_rows)
+                         subcol_rows=args.subcol_rows)
     rs = []
     for b in ("low", "mid", "high"):
         rs.append(estimate_pipeline(

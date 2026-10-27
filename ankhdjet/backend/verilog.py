@@ -248,11 +248,7 @@ class PipelineConfig:
     scales_q is a per-between-layer Q-format scale factor list
     (L-1 entries for an L-layer model); when None, unit scale is used.
 
-    readout selects the NOR-array readout tier for estimation:
-    "analog" (per-sub-column StrongARM comparators; matches the
-    published SKY130 anchors) or "digital" (full-swing bitline
-    samplers, the default tier). tile_cols/bit_parallel
-    only apply to the legacy parallel-WL architecture
+    tile_cols/bit_parallel only apply to the legacy parallel-WL architecture
     (nor_array=False), which 1T cells cannot implement.
     """
     k_bits: int = 8
@@ -264,7 +260,6 @@ class PipelineConfig:
     bit_parallel: bool = False
     nor_array: bool = True
     subcol_rows: int = 64
-    readout: str = "analog"
 
     def scale_q_for(self, between_layer_idx: int) -> int:
         if self.scales_q is None:
