@@ -47,7 +47,7 @@ tile_cols=16, bracketed throughput).
 |---|---|---|---|---|
 | sky130_v4 (as built) | 285.2 | 48.4 | 183.9 | 191,022 |
 | sky130_biroma_bound | 228.2 | 7.1 | 175.6 | 191,022 |
-| asap7 (anchored) | 4.9 | 1.5 | 2.4 | 1,421,801 |
+| asap7 (anchored) | 3.6 | 0.6 | 2.3 | 1,421,801 |
 
 The next comes from `ankhdjet fit --bracketed` at a reticle-class
 815 mm² die, the largest fitting BitNet-class shape per anchor.
@@ -68,43 +68,47 @@ node's periphery calibration to 0.42.
 
 The entire microsoft/bitnet-b1.58-2B-4T (2.4B ternary LINEAR weights,
 30 blocks, hidden 2560, 4096-token KV context) fits a single
-reticle-class die at the anchored ASAP7 density, digital readout:
+reticle-class die at the anchored ASAP7 density with digital readout.
 
 | bitlines | acts | total mm² | of 815 mm² | tok/s (mid) |
 |---|---|---|---|---|
-| 256-row | A8 | 300.1 | 36.8% | 357,739 |
-| 64-row | A8 | 340.0 | 41.7% | 1,338,091 |
-| 64-row | A4 | 339.2 | 41.6% | 2,463,054 |
+| 256-row | A8 | 184.7 | 22.7% | 357,483 |
+| 64-row | A8 | 224.6 | 27.6% | 1,338,091 |
+| 64-row | A4 | 223.8 | 27.5% | 2,463,054 |
 
-Breakdown at 256-row/A8: cells 145.9 mm² (2.08B ternary weights x
-0.07 µm²/weight), periphery 68.1, KV cache SRAM 50.3, attention
-engine 1.7, die overhead 32. The bf16-tied lm_head (328M params) is
-off-fabric, matching the emitter, and is excluded from the hardwired
-die (a large embedding table accounted separately, not ternary
-silicon). The bottom-up bitcell carries a stated 0.05-0.10 µm²
-sensitivity band, bounding the total at roughly 250-370 mm². At 7 nm
-the bitline-depth tradeoff inverts from the 130 nm analog calculus:
-64-row bitlines cost +14% area for 3.7x the throughput, since the
-per-pass row window, not the sense periphery, dominates. All numbers
-are calibrated model estimates from ankhdjet estimate
-(--readout digital), not silicon, and are decode-fabric rates: on-die
-periphery cycles (attention, KV access, inter-layer transport) are
-charged per token, but the off-fabric lm_head and sampling are the
-host's (at 64-row/A4 the head alone implies ~1.6 PFLOP/s of bf16).
+The breakdown at 256-row/A8 is cells 56.3 mm² (2.08B ternary weights
+x 0.027 µm²/weight), periphery 57.6, KV cache SRAM 50.3, attention
+engine 0.7 and die overhead 19.8. The bf16-tied lm_head (328M params)
+is off-fabric, matching the emitter, and is excluded from the
+hardwired die (a large embedding table accounted separately, not
+ternary silicon). The cell is the verified SKY130 bitcell carried over
+at ASAP7's metal and gate pitches. Compacting it to the bare
+transistor pitch, which removes the 2.33x column and 1.46x row
+inflation decomposed above, would cut the cells to about 17 mm² and
+the total to about 135 mm², so the total sits between roughly 135 and
+185 mm². At 7 nm the bitline-depth tradeoff inverts from the 130 nm
+calculus, as 64-row bitlines cost +22% area for 3.7x the throughput
+because the per-pass row window, not the sense periphery, dominates.
+All numbers are calibrated model estimates from ankhdjet estimate,
+not silicon, and are decode-fabric rates. On-die periphery cycles
+(attention, KV access, inter-layer transport) are charged per token,
+but the off-fabric lm_head and sampling are the host's (at 64-row/A4
+the head alone implies ~1.6 PFLOP/s of bf16).
 
-The full depth sweep (A4 shown; A8 halves throughput at near-equal
-area) has no sharp knee: area asymptotes at the ~325 mm2 cell+KV
-floor while throughput halves per depth doubling, so throughput
-density favors shallow bitlines monotonically within the model:
+The full depth sweep (A4 shown, A8 halves throughput at near-equal
+area) has no sharp knee. Area falls toward a floor of about 165 mm²
+set by the cells and the KV cache while throughput halves per depth
+doubling, so throughput density favors shallow bitlines monotonically
+within the model.
 
 | rows | mm2 | tok/s | tok/s per mm2 |
 |---|---|---|---|
-| 16 | 484 | 6.67M | 13,783 |
-| 32 | 390 | 4.21M | 10,801 |
-| 64 | 339 | 2.46M | 7,263 |
-| 128 | 312 | 1.33M | 4,282 |
-| 256 | 297 | 699k | 2,355 |
-| 512 | 289 | 358k | 1,237 |
+| 16 | 368 | 6.67M | 18,100 |
+| 32 | 275 | 4.21M | 15,341 |
+| 64 | 224 | 2.46M | 11,008 |
+| 128 | 196 | 1.34M | 6,818 |
+| 256 | 181 | 699k | 3,854 |
+| 512 | 174 | 358k | 2,060 |
 
 Model risk concentrates at the extremes: deep points assume one row
 per 667 ps clock regardless of bitline RC (optimistic at 512), and
