@@ -1,13 +1,25 @@
 # Scaled-process PDK descriptors (estimates only - no actual base cell).
 # Used to project "what if we moved to a denser node?" in area reports.
-# All numbers scale from the SKY130 AS-BUILT anchor (sky130_v4.yaml,
+# The ROM bitcell scales from the SKY130 AS-BUILT anchor (sky130_v4.yaml,
 # bitcell 2.21 um^2/weight, one weight per cell, no array overhead baked
 # in: estimate_layer applies array_overhead_frac separately) by the
-# square of the feature-size ratio for geometric blocks (cells, SRAM).
-# Clock frequency scales roughly with process (linear). Peripheral gate
-# area scales similarly. BiROMA (2 weights/cell) is NOT in these
-# baselines; within its 65-28 nm viability window the tools apply it
-# via --biroma on top.
+# square of the feature-size ratio. Clock frequency scales roughly with
+# process (linear).
+#
+# SRAM and gate area come from published process data instead, because
+# node names stopped tracking pitches below about 28 nm and the square of
+# the name overstates density there:
+#   - sram_um2_per_bit is the foundry's high-density 6T cell over a 70%
+#     macro array efficiency. That ratio reproduces the asap7 pack's
+#     measured FakeRAM 0.04 um^2/bit from a 7nm-class 0.027 um^2 cell.
+#   - generic_6nm's gate area follows the asap7 convention (NAND2 area
+#     times the measured synth_calibration of 0.42, see asap7.yaml), the
+#     only measured mapping of the estimator's gate counts onto a FinFET
+#     library. generic_65nm and generic_28nm keep the SKY130-relative gate
+#     area, which sits inside the bracket published data gives for them.
+#
+# BiROMA (2 weights/cell) is NOT in these baselines; within its 65-28 nm
+# viability window the tools apply it via --biroma on top.
 
 # GlobalFoundries 65nm class
 - name: generic_65nm
@@ -20,7 +32,7 @@
   synth_calibration: 1.0
   between_layer_gates_per_channel: 1000
   serializer_gates_per_row: 15
-  sram_um2_per_bit: 0.25            # 1.0 / 4
+  sram_um2_per_bit: 0.71            # 6T cell under 0.5 um^2 (TSMC 65nm, https://pr.tsmc.com/english/news/1390) / 0.7
   array_overhead_frac: 0.18
   die_routing_overhead_frac: 0.15
   clock_mhz: 400
@@ -36,13 +48,13 @@
   process_nm: 28
   node_scale: 21.6                  # (130/28)^2 ~= 21.6
   bitcell_um2: 0.1025            # 2.21 * (28/130)^2
-  gate_equivalent_um2: 0.23
+  gate_equivalent_um2: 0.23         # raw gate density 3900 kgate/mm^2 gives 0.26 per NAND2 (https://www.eetimes.com/?p=1171184)
   transistors_per_gate: 4
   popcount_gates_per_row: 25
   synth_calibration: 1.0
   between_layer_gates_per_channel: 1000
   serializer_gates_per_row: 15
-  sram_um2_per_bit: 0.046
+  sram_um2_per_bit: 0.18            # 0.127 um^2 6T cell (TSMC 28LP, https://pr.tsmc.com/english/news/1556) / 0.7
   array_overhead_frac: 0.18
   die_routing_overhead_frac: 0.15
   clock_mhz: 1000
@@ -58,13 +70,13 @@
   process_nm: 6
   node_scale: 469.4                 # (130/6)^2 ~= 469
   bitcell_um2: 0.00471           # 2.21 * (6/130)^2
-  gate_equivalent_um2: 0.011
+  gate_equivalent_um2: 0.037        # NAND2 area, N7's 91.2 MTr/mm^2 over 4 transistors (https://en.wikichip.org/wiki/N7) less N6's 18% logic density gain
   transistors_per_gate: 4
   popcount_gates_per_row: 25
-  synth_calibration: 1.0
+  synth_calibration: 0.42           # the asap7 pack's measured complex-cell mapping
   between_layer_gates_per_channel: 1000
   serializer_gates_per_row: 15
-  sram_um2_per_bit: 0.0021
+  sram_um2_per_bit: 0.039           # 0.027 um^2 6T cell (TSMC N7, which N6 shares, Wu et al. IEDM 2016) / 0.7
   array_overhead_frac: 0.15
   die_routing_overhead_frac: 0.12
   # Production-tile fmax in multi-domain mode (1.5 GHz calibrated to Taalas's published N6
