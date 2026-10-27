@@ -9,7 +9,7 @@ Pins:
     + precharge instead of popcount tree
   - tile_cols > 1 shares popcount trees across output columns
   - active_cells reflects the nonzero weight count (sparsity-independent
-    of footprint, per the NOR-array family convention, Taalas/BitROM precedent)
+    of footprint, per the NOR-array family convention, BitROM precedent)
 
 Uses a synthetic PDK so the test doesn't drift if the real sky130.yaml
 is retuned.

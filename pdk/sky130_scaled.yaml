@@ -68,7 +68,7 @@
   clock_domain_area_mm2: 0    # 0 = derive from per-tile area
   crossing_cycles_per_hop: 3
 
-# TSMC 6nm class (Taalas reference)
+# TSMC 6nm class
 - name: generic_6nm
   process_nm: 6
   node_scale: 469.4                 # (130/6)^2 ~= 469
@@ -82,9 +82,8 @@
   sram_um2_per_bit: 0.039           # 0.027 um^2 6T cell (TSMC N7, which N6 shares, Wu et al. IEDM 2016) / 0.7
   array_overhead_frac: 0.15
   die_routing_overhead_frac: 0.12
-  # Production-tile fmax in multi-domain mode (1.5 GHz calibrated to Taalas's published N6
-  # implied tile clock, NVIDIA H100 SM ~1.83 GHz, AMD MI300 ~2.1 GHz lower
-  # bound). NOT the small-block synthesis target (which would be ~2.5 GHz
+  # Production-tile fmax in multi-domain mode (1.5 GHz, against NVIDIA H100
+  # SM ~1.83 GHz and AMD MI300 ~2.1 GHz as a lower bound). NOT the small-block synthesis target (which would be ~2.5 GHz
   # but is unachievable at production-tile scale).
   clock_mhz: 1500
   vdd_v: 0.75
@@ -92,6 +91,6 @@
   wire_hop_cycles: 0
   kv_access_cycles_per_layer: 0
   # Matches H100/B200/MI300 tile scale: ~16 mm^2 synchronous islands with
-  # 3-cycle async-FIFO crossings. Reproduces Taalas's 17K tok/s headline.
+  # 3-cycle async-FIFO crossings.
   clock_domain_area_mm2: 0    # 0 = derive from per-tile area
   crossing_cycles_per_hop: 3

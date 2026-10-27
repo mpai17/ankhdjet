@@ -8,8 +8,7 @@ model- and node-agnostic: it accepts any HuggingFace BitNet b1.58-class
 model and emits CiROM macros + wrapper RTL targeted at any of three
 open PDKs (SKY130 130 nm, GF180MCU 180 nm, ASAP7 7 nm).
 
-Other quantization formats (Taalas's custom 3-bit + 6-bit-per-block
-([taalas.com](https://taalas.com/the-path-to-ubiquitous-ai/)), INT4 /
+Other quantization formats (3-bit and 6-bit block formats, INT4 /
 GPTQ / AWQ, FP4) are explicitly out of scope for v1. They would
 require a different cell encoding (more storage cells per weight, or
 multi-level via / multi-threshold storage) and a wider accumulate
@@ -23,12 +22,10 @@ The headline reference point is **Microsoft `bitnet-b1.58-2B-4T`**
 ([HuggingFace](https://huggingface.co/microsoft/bitnet-b1.58-2B-4T),
 [BitNet b1.58 paper, arXiv 2402.17764](https://arxiv.org/abs/2402.17764),
 [BitNet b1.58 2B-4T tech report, arXiv 2504.12285](https://arxiv.org/pdf/2504.12285)).
-Taalas's published 17 K tok/s on Llama-3.1-8B is **not** an
-apples-to-apples comparison: Taalas runs at 3-bit precision with a
-6-bit per-block scale, not at ternary. Ankhdjet's headline tok/s number
-is benchmarked against BitROM (the closest open peer at ternary
-precision), with the Taalas filing serving as production precedent for the
-cell + array structural family only.
+Ankhdjet's headline tok/s number is benchmarked against BitROM (the
+closest open peer at ternary precision), with patent application
+WO2025217724A1 serving as precedent for the cell + array structural
+family only.
 
 This document records the array + wrapper architecture compiled per
 N×M ternary weight tensor, and the peripheral blocks the compiler
@@ -50,11 +47,10 @@ marked as such.
 
 The architecture is intentionally close to BitROM (the closest
 published peer at ternary precision) and belongs to the same
-structural family the Taalas filing (WO2025217724A1) describes at the
+structural family patent application WO2025217724A1 describes at the
 cell + array level; the design differs where the filing claims (see
-the commercial-precedent section below). Where Taalas explicitly declines to
-disclose post-sense details, the design picks the BitROM-aligned
-default.
+the patent-precedent section below). Where the filing is silent on
+post-sense details, the design picks the BitROM-aligned default.
 
 ## The SKY130 implementations versus the production target
 
@@ -156,13 +152,7 @@ Scale handling as implemented: BitNet's absmean per-tensor weight
 scale folds into the static per-stage requantize scale (16-bit Q8.8
 fixed point); the absmax per-token activation scale is
 runtime-dynamic and lives in the activation path, never folded into
-a static mask-time scale. Taalas's published number format (a 3-bit
-base with 6-bit per-tile parameters,
-[taalas.com; The path to ubiquitous AI](https://taalas.com/the-path-to-ubiquitous-ai/),
-[Next Platform interview](https://www.nextplatform.com/compute/2026/02/19/taalas-etches-ai-models-onto-transistors-to-rocket-boost-inference/4092140),
-[AI Central; Hardwired](https://aicentral.substack.com/p/hardwired))
-is a commercial datapoint for aggressive quantized formats in this
-family; no artifact here carries K=3 or a 6-bit per-tile scale.
+a static mask-time scale.
 
 Column tiling: **256 rows per sub-column at the production geometry**
 (grouped 8 bitlines per sense amp in the analog variant, 32 groups
@@ -191,13 +181,13 @@ Mainstream open-source ROM compilers default to similar 4–16:1 fan-in
 [OpenRAM thesis (UCSC)](https://escholarship.org/content/qt2vv5q88z/qt2vv5q88z_noSplash_389063a5d89db05d7b42a63b528c7fc2.pdf)).
 
 Sense amplifier: **clocked StrongARM-class** (fully
-digital at the latch boundary). The Taalas filing says the readout *"may compare the
+digital at the latch boundary). The WO2025217724A1 filing says the readout *"may compare the
 voltage on the read line ... to the pre-charge low value"* and
 *"sense amplifiers may output the interpreted values to the designated
 output lines"* ([WO2025217724A1 paragraphs 0046, 0053](https://patents.google.com/patent/WO2025217724A1/en)),
 which is consistent with the same family of clocked sense amps
 (the shared element is the clocked-sense family only; the compared
-polarity is opposite, per the commercial-precedent section below).
+polarity is opposite, per the patent-precedent section below).
 [Choi et al.](https://ieeexplore.ieee.org/document/7482552) demonstrates
 a low-swing edge sense at 0.55 ns / 0.85 V at 16 nm; the same topology
 applies at 7 nm.
@@ -262,11 +252,10 @@ column muxing, BL precharge, and a small per-group accumulator.
 | OpenRAM ROM compiler | SKY130 (open) | 1T-NAND bitcell, row decoder, WL driver, column mux (default tx_size=8), BL precharge, output inverter buffer | [OpenRAM `rom_*` source](https://github.com/VLSIDA/OpenRAM/tree/stable/compiler/modules); [OpenRAM thesis](https://escholarship.org/content/qt2vv5q88z/qt2vv5q88z_noSplash_389063a5d89db05d7b42a63b528c7fc2.pdf) |
 | TinyTapeout SKY130 ROM experiments | SKY130 (open) | OpenRAM ROM compiler outputs, taped out | [TinyTapeout sky130-rom-experiments](https://github.com/TinyTapeout/sky130-rom-experiments) |
 
-## Commercial precedent: the Taalas filing, and where this design differs
+## Patent precedent: WO2025217724A1, and where this design differs
 
-The [Taalas WO2025217724A1](https://patents.google.com/patent/WO2025217724A1/en)
-filing ([WIPO mirror](https://patentscope.wipo.int/search/en/detail.jsf?docId=WO2025217724),
-[Taalas press release](https://www.htsyndication.com/us-fed-news/article/international-patent:-taalas-inc.-files-application-for--mask-programmable-rom-using-shared-connections-/22214122607))
+Patent application [WO2025217724A1](https://patents.google.com/patent/WO2025217724A1/en)
+([WIPO mirror](https://patentscope.wipo.int/search/en/detail.jsf?docId=WO2025217724))
 describes a mask-programmable ROM in the same structural family: a 1T
 cell with the gate on a wordline and the drain via-customized at
 back-end-of-line to one of multiple shared bitlines (¶0007), read by
@@ -274,15 +263,10 @@ sense amplifiers that compare the read line against a precharge-low
 value and present the detected bit at their outputs (¶0046, ¶0053,
 flow steps 406-408), with simultaneous read width scaling with
 sense-amplifier count and column connectivity (¶0046), i.e. column
-muxing by design. The disclosure deliberately stops at the
-sense-amplifier output; Bajic publicly describes the post-sense
-fabric as fully digital and explicitly declines to disclose it
-([Next Platform](https://www.nextplatform.com/compute/2026/02/19/taalas-etches-ai-models-onto-transistors-to-rocket-boost-inference/4092140);
-[EE Times](https://www.eetimes.com/taalas-specializes-to-extremes-for-extraordinary-token-speed/)).
+muxing by design. The disclosure stops at the sense-amplifier output.
 
-The filing is cited here as commercial confirmation that the
-mask-programmed 1T ROM family is production-viable, not as a source
-of this design. The design differs where the filing claims:
+The filing is cited here as precedent that the mask-programmed 1T ROM
+family is pursued commercially, not as a source of this design. The design differs where the filing claims:
 
 - **The readout of record performs no comparison at all.** The
   filing's disclosed sense scheme is comparison-based (read line
@@ -490,12 +474,6 @@ wrapper budget are:
   *"TriMLAs, peripheral logic, and adder tree collectively occupy only
   4.8% of the total area"*; the peripheral area fraction we aim to
   approach as array sizes grow.
-- Taalas's chip-level ratio (53 B transistors / 8 B parameters ≈ 6.6 T
-  per parameter, [taalas.com](https://taalas.com/products/),
-  [Next Platform](https://www.nextplatform.com/compute/2026/02/19/taalas-etches-ai-models-onto-transistors-to-rocket-boost-inference/4092140))
-  is the chip-scale upper bound when KV SRAM, attention engine,
-  RMSNorm, RoPE, scheduler, clock tree, IO pads, and ESD are added on
-  top of the array macros.
 
 Per-block transistor counts depend strongly on synthesis library, gate
 sizing, and node, and are deliberately not enumerated here: this
@@ -577,30 +555,19 @@ Python reference, area + throughput model) ports automatically.
 
 ## Open uncertainties and where this design invents
 
-**Taalas public commercial statements noted but NOT adopted
-(interviews and marketing, not the filing):**
-- The 3-bit-base + 6-bit-per-tile number format (taalas.com, Next
-  Platform, AI Central): a commercial datapoint for aggressive
-  quantized formats in this family; no artifact carries it (the
-  implemented stack is K-parameterized bit-serial activations, K=8
-  reference / K=4 hardened on Darga, with a 16-bit Q8.8 per-tensor
-  requantize scale).
-
-**Independent choices whose production viability Taalas's disclosures
-corroborate (the design differs where the filing claims, per the
-commercial-precedent section above):**
+**Independent choices whose production viability the WO2025217724A1
+filing corroborates (the design differs where the filing claims, per
+the patent-precedent section above):**
 - 1T NMOS via-1 programmed cell (the production mask-ROM family
-  precedent above; corroborated by the filing + EE Times)
+  precedent above; corroborated by the filing)
 - Many bitlines per clocked sense amp via column muxing in the analog
   variant's production geometry (ARM and OpenRAM compilers;
   corroborated by filing ¶0046/0053); distinct from the filing's
   claimed cell-level shared bit-terminal connections, which Ankhdjet
   does not use
 - Higher effective storage per cell transistor as a smaller-node
-  direction (Bajic describes storing four effective bits and the
-  multiply in a single transistor; the mechanism is undisclosed):
-  the BiROMA 2-ternary-weights-per-cell encoding (BitROM) reaches
-  toward this and is NO-GO at SKY130 per the BiROMA record
+  direction: the BiROMA 2-ternary-weights-per-cell encoding (BitROM)
+  reaches toward this and is NO-GO at SKY130 per the BiROMA record
 
 **Inventions over published prior art:**
 - Inter-layer accumulator absorption: layer N's accumulate/scale/
@@ -608,7 +575,7 @@ commercial-precedent section above):**
 - Bit-streaming of the requantized output between layers, so no
   inter-layer SRAM stage exists (other than the KV cache).
 
-**BitROM values adopted where Taalas is undisclosed (closest open
+**BitROM values adopted where the filing is silent (closest open
 peer; these model the analog variant's production geometry, whereas
 the signed-off SKY130 analog chip senses single-ended binary against
 VDD/2 with no mux, and the digital chip samples at full swing):**
@@ -622,11 +589,6 @@ VDD/2 with no mux, and the digital chip samples at full swing):**
 - ARM via-programmable ROM compiler exact column-mux ratio
   (datasheet login-walled; assumed 8:1 by analogy)
 - Choi et al. A-SSCC 2016 internals not retrievable (IEEE paywall)
-- Taalas 6-bit parameter scope (per-tile vs per-channel) is genuinely
-  undisclosed (per-tile is the natural reading: per-channel × 8B
-  params = too many scales, per-tensor × 6 bits = too coarse)
-- Whether Taalas uses BitROM-style BiROMA encoding or some other
-  4-bit-per-1T mechanism (Bajic explicitly declined to disclose)
 - BitROM's 4,967 kB/mm² density at 65 nm is layout-extracted, not
   silicon-measured; treat as ±30%
 
@@ -668,17 +630,8 @@ VDD/2 with no mux, and the digital chip samples at full swing):**
   [BitROM ASP-DAC 2026](https://www.aspdac.com/aspdac2026/archive/pdf/4B-1.pdf) /
   [BitROM GitHub](https://github.com/Wenlun-Zhang/BitROM)
 - [TOM, arXiv 2602.20662](https://arxiv.org/html/2602.20662)
-- [Taalas WO2025217724A1 (Google Patents)](https://patents.google.com/patent/WO2025217724A1/en) /
-  [WIPO mirror](https://patentscope.wipo.int/search/en/detail.jsf?docId=WO2025217724) /
-  [Taalas press release](https://www.htsyndication.com/us-fed-news/article/international-patent:-taalas-inc.-files-application-for--mask-programmable-rom-using-shared-connections-/22214122607)
-- [Taalas; The path to ubiquitous AI](https://taalas.com/the-path-to-ubiquitous-ai/) /
-  [Taalas products page](https://taalas.com/products/) /
-  [EE Times Taalas interview](https://www.eetimes.com/taalas-specializes-to-extremes-for-extraordinary-token-speed/) /
-  [Next Platform Taalas interview](https://www.nextplatform.com/compute/2026/02/19/taalas-etches-ai-models-onto-transistors-to-rocket-boost-inference/4092140) /
-  [AI Central; Hardwired](https://aicentral.substack.com/p/hardwired) /
-  [Datacenter Dynamics; Taalas HC1 unveil](https://www.datacenterdynamics.com/en/news/ai-chip-startup-taalas-raises-169m-unveils-hc1-processor-optimized-for-llama-31-8b/) /
-  [CNX Software HC1 review](https://www.cnx-software.com/2026/02/22/taalas-hc1-hardwired-llama-3-1-8b-ai-accelerator-delivers-up-to-17000-tokens-s/) /
-  [Medium HC1 deep dive](https://medium.com/@bmilew/a-look-at-taalas-hc1-chip-reaching-new-heights-in-llm-inference-56cd079f59a3)
+- [WO2025217724A1 (Google Patents)](https://patents.google.com/patent/WO2025217724A1/en) /
+  [WIPO mirror](https://patentscope.wipo.int/search/en/detail.jsf?docId=WO2025217724)
 - [Choi et al. A-SSCC 2016 16-nm 1T ROM (IEEE 7482552)](https://ieeexplore.ieee.org/document/7482552)
 - [TSMC 128-kb 1T ROM 0.56-ns (IEEE 7406972)](https://ieeexplore.ieee.org/document/7406972/)
 - [Etron 40-nm 16-Mb mask ROM JSSC 2015 (IEEE 7161376)](https://ieeexplore.ieee.org/document/7161376/)
